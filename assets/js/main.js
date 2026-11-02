@@ -1,8 +1,152 @@
-// --- 인터랙션 상태 관리 변수 ---
+// ==========================================
+// 1. 12점 연작 아카이브 데이터셋
+// ==========================================
+const exhibitionData = [
+  {
+    id: 1,
+    title: "중첩된 온기 I: 첫 등교길",
+    aspect: "landscape", // 4:3
+    pastYear: "2007",
+    presentYear: "2026",
+    location: "초등학교 앞 골목길",
+    desc: "가방을 메고 앞서 걷던 아이의 뒷모습을 담던 아버지의 시선. 같은 골목에서 카메라를 들고 선 나는 어느덧 그 시절 아버지의 나이가 되었습니다.",
+    pastImg: "assets/images/work-01-past.webp",
+    presentImg: "assets/images/work-01-present.webp"
+  },
+  {
+    id: 2,
+    title: "중첩된 온기 II: 유달산의 바람",
+    aspect: "portrait", // 3:4
+    pastYear: "2009",
+    presentYear: "2026",
+    location: "목포 유달산 마당바위",
+    desc: "바람에 흩날리던 옷깃과 어린 미소. 세월이 흘러 같은 바위 위에 서서, 나를 향해 셔터를 누르던 아버지의 호흡을 떠올립니다.",
+    pastImg: "assets/images/work-02-past.webp",
+    presentImg: "assets/images/work-02-present.webp"
+  },
+  {
+    id: 3,
+    title: "중첩된 온기 III: 바다를 가리키며",
+    aspect: "landscape", // 4:3
+    pastYear: "2010",
+    presentYear: "2026",
+    location: "제주 서쪽 해안도로",
+    desc: "먼 수평선을 가리키던 작은 손. 그 손은 이제 카메라 그립을 단단히 쥐고 아버지의 시야 너머를 응시합니다.",
+    pastImg: "assets/images/work-03-past.webp",
+    presentImg: "assets/images/work-03-present.webp"
+  }
+];
+
+function toRoman(num) {
+  const roman = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+  return roman[num - 1] || num;
+}
+
+// 12개 채우기
+while (exhibitionData.length < 12) {
+  const i = exhibitionData.length + 1;
+  const isLandscape = i % 2 !== 0;
+  exhibitionData.push({
+    id: i,
+    title: `중첩된 온기 ${toRoman(i)}: 연작`,
+    aspect: isLandscape ? "landscape" : "portrait",
+    pastYear: "200X",
+    presentYear: "2026",
+    location: "기억의 아카이브 장소",
+    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    pastImg: `assets/images/work-${String(i).padStart(2, '0')}-past.webp`,
+    presentImg: `assets/images/work-${String(i).padStart(2, '0')}-present.webp`
+  });
+}
+
+// ==========================================
+// 2. DOM 요소 연결 (ReferenceError 방지)
+// ==========================================
+const frame = document.getElementById("lenticular-frame");
+const layerPast = document.getElementById("layer-past");
+const layerPresent = document.getElementById("layer-present");
+const layerGlare = document.getElementById("layer-glare");
+const indicatorPin = document.getElementById("indicator-pin");
+
+const workIndexEl = document.getElementById("work-index");
+const workTitleEl = document.getElementById("work-title");
+const workMetaEl = document.getElementById("work-meta");
+const workDescEl = document.getElementById("work-desc");
+const trayContainer = document.getElementById("thumbnail-tray");
+
+// ==========================================
+// 3. 상태 제어 변수
+// ==========================================
+let currentIndex = 0;
+let currentProgress = 0.5;
+let targetProgress = 0.5;
+let isDragging = false;
+let startX = 0;
+let baseProgress = 0.5;
 let isTouching = false;
 let gyroResumeTimeout = null;
 
-// 1. 공통 터치/드래그 시작 핸들러
+// ==========================================
+// 4. 작품 로드 함수
+// ==========================================
+function loadArtwork(index) {
+  currentIndex = index;
+  const item = exhibitionData[index];
+
+  if (item.aspect === "landscape") {
+    frame.classList.remove("aspect-portrait");
+    frame.classList.add("aspect-landscape");
+  } else {
+    frame.classList.remove("aspect-landscape");
+    frame.classList.add("aspect-portrait");
+  }
+
+  layerPast.style.backgroundImage = `url('${item.pastImg}')`;
+  layerPresent.style.backgroundImage = `url('${item.presentImg}')`;
+
+  workIndexEl.textContent = `${String(item.id).padStart(2, "0")} / 12`;
+  workTitleEl.textContent = item.title;
+  workMetaEl.textContent = `${item.pastYear} / ${item.presentYear} · ${item.location}`;
+  workDescEl.textContent = item.desc;
+
+  document.querySelectorAll(".thumb-item").forEach((el, idx) => {
+    el.classList.toggle("active", idx === index);
+  });
+}
+
+// ==========================================
+// 5. 렌티큘러 뷰 업데이트 (물리 및 각도 계산)
+// ==========================================
+function updateLenticularView(progress) {
+  currentProgress = Math.max(0, Math.min(1, progress));
+
+  // 선명한 렌티큘러 전환
+  const presentOpacity = Math.max(0, Math.min(1, (currentProgress - 0.35) / 0.3));
+  layerPresent.style.opacity = presentOpacity;
+
+  // 3D 틸트 및 패럴랙스
+  const angle = (currentProgress - 0.5) * 2;
+  const rotateY = angle * 12;
+  frame.style.transform = `rotateY(${rotateY}deg)`;
+
+  // 표면 글레어 반사
+  layerGlare.style.opacity = Math.abs(angle) * 0.4;
+  layerGlare.style.transform = `translateX(${angle * 100}%)`;
+
+  // 인디케이터 핀 위치
+  indicatorPin.style.left = `${currentProgress * 100}%`;
+}
+
+function animationLoop() {
+  currentProgress += (targetProgress - currentProgress) * 0.15;
+  updateLenticularView(currentProgress);
+  requestAnimationFrame(animationLoop);
+}
+requestAnimationFrame(animationLoop);
+
+// ==========================================
+// 6. 터치 및 드래그 제어 (터치 시 자이로 일시정지, 0.5초 복구)
+// ==========================================
 function onTouchStart(clientX) {
   isTouching = true;
   isDragging = true;
@@ -15,34 +159,30 @@ function onTouchStart(clientX) {
   }
 }
 
-// 2. 공통 터치/드래그 이동 핸들러
 function onTouchMove(clientX) {
   if (!isDragging) return;
   const deltaX = clientX - startX;
-  // 액자 가로폭 기준으로 100% 이동 시 전체 전환되도록 계산 (터치감 향상)
   const frameWidth = frame.offsetWidth || 300;
   targetProgress = Math.max(0, Math.min(1, baseProgress + (deltaX / frameWidth)));
 }
 
-// 3. 공통 터치/드래그 종료 핸들러 (0.5초 딜레이 복구)
 function onTouchEnd() {
   isDragging = false;
   if (gyroResumeTimeout) clearTimeout(gyroResumeTimeout);
   gyroResumeTimeout = setTimeout(() => {
     isTouching = false;
-  }, 500); // 0.5초 대기 후 자이로 재가동
+  }, 500); // 0.5초 딜레이 복구
 }
 
-// === [모바일 전용 네이티브 터치 이벤트] ===
-// passive: false로 지정하여 모바일 스크롤 간섭 방지
+// 모바일 네이티브 터치
 frame.addEventListener("touchstart", (e) => {
-  if (e.touches.length > 0) {
+  if (e.touches && e.touches.length > 0) {
     onTouchStart(e.touches[0].clientX);
   }
 }, { passive: true });
 
 frame.addEventListener("touchmove", (e) => {
-  if (e.touches.length > 0) {
+  if (e.touches && e.touches.length > 0) {
     onTouchMove(e.touches[0].clientX);
   }
 }, { passive: true });
@@ -50,7 +190,7 @@ frame.addEventListener("touchmove", (e) => {
 frame.addEventListener("touchend", onTouchEnd, { passive: true });
 frame.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
-// === [데스크톱 마우스 이벤트] ===
+// 데스크톱 마우스
 frame.addEventListener("mousedown", (e) => {
   onTouchStart(e.clientX);
 });
@@ -59,7 +199,6 @@ window.addEventListener("mousemove", (e) => {
   if (isDragging) {
     onTouchMove(e.clientX);
   } else {
-    // 마우스 호버 반응 (화면 터치가 아닐 때만)
     const rect = frame.getBoundingClientRect();
     if (
       e.clientX >= rect.left &&
@@ -76,13 +215,75 @@ window.addEventListener("mouseup", () => {
   if (isDragging) onTouchEnd();
 });
 
-// === [스마트폰 자이로스코프(DeviceOrientation) 연동] ===
+// ==========================================
+// 7. 모바일 자이로 센서 (DeviceOrientation)
+// ==========================================
 function handleOrientation(e) {
-  // 사용자가 화면을 터치 중이거나 손을 뗀 직후 0.5초간은 자이로 연산 완전 차단
-  if (isTouching) return;
-
+  if (isTouching) return; // 사용자가 화면 터치 중이거나 손 뗀 직후 0.5초 동안은 자이로 중단
   if (e.gamma === null) return;
   const gamma = Math.max(-25, Math.min(25, e.gamma));
-  // -25도 ~ +25도를 0.0 ~ 1.0 범위로 매핑
   targetProgress = (gamma + 25) / 50;
 }
+
+const sensorBanner = document.getElementById("sensor-permission-banner");
+const btnEnableSensor = document.getElementById("btn-enable-sensor");
+
+if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+  sensorBanner.classList.remove("hidden");
+  btnEnableSensor.addEventListener("click", async () => {
+    try {
+      const state = await DeviceOrientationEvent.requestPermission();
+      if (state === "granted") {
+        window.addEventListener("deviceorientation", handleOrientation);
+        sensorBanner.classList.add("hidden");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  });
+} else {
+  window.addEventListener("deviceorientation", handleOrientation);
+}
+
+// ==========================================
+// 8. 썸네일 트레이 렌더링
+// ==========================================
+function renderTray() {
+  trayContainer.innerHTML = "";
+  exhibitionData.forEach((item, index) => {
+    const thumb = document.createElement("div");
+    thumb.className = `thumb-item aspect-${item.aspect}`;
+    thumb.innerHTML = `
+      <div class="thumb-preview" style="background-image: url('${item.presentImg}')"></div>
+      <span class="thumb-label">${String(item.id).padStart(2, '0')}</span>
+    `;
+    thumb.addEventListener("click", () => {
+      loadArtwork(index);
+    });
+    trayContainer.appendChild(thumb);
+  });
+}
+
+// ==========================================
+// 9. 전시 서문 모달
+// ==========================================
+const btnStatement = document.getElementById("btn-statement");
+const modal = document.getElementById("statement-modal");
+const btnCloseModal = document.getElementById("btn-close-modal");
+const modalBackdrop = modal ? modal.querySelector(".modal-backdrop") : null;
+
+if (btnStatement && modal) {
+  btnStatement.addEventListener("click", () => modal.classList.remove("hidden"));
+}
+if (btnCloseModal && modal) {
+  btnCloseModal.addEventListener("click", () => modal.classList.add("hidden"));
+}
+if (modalBackdrop && modal) {
+  modalBackdrop.addEventListener("click", () => modal.classList.add("hidden"));
+}
+
+// ==========================================
+// 10. 초기 구동 실행
+// ==========================================
+renderTray();
+loadArtwork(0);
