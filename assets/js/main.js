@@ -16,7 +16,7 @@ const exhibitionData = [
   {
     id: 2,
     title: "중첩된 온기 II: 테스트 투",
-    aspect: "portrait", // 3:4
+    aspect: "landscape", // 4:3
     pastYear: "2009",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
@@ -34,30 +34,107 @@ const exhibitionData = [
     desc: "테스트 쓰리 문장.",
     pastImg: "assets/images/work-03-past.webp",
     presentImg: "assets/images/work-03-present.webp"
-  }
-];
-
-function toRoman(num) {
-  const roman = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-  return roman[num - 1] || num;
-}
-
-// 12개 채우기
-while (exhibitionData.length < 12) {
-  const i = exhibitionData.length + 1;
-  const isLandscape = i % 2 !== 0;
-  exhibitionData.push({
-    id: i,
-    title: `중첩된 온기 ${toRoman(i)}: 연작`,
-    aspect: isLandscape ? "landscape" : "portrait",
+  },
+  {
+    id: 4,
+    title: "중첩된 온기 IV: 연작 4",
+    aspect: "portrait",
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
     desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
-    pastImg: `assets/images/work-${String(i).padStart(2, '0')}-past.webp`,
-    presentImg: `assets/images/work-${String(i).padStart(2, '0')}-present.webp`
-  });
-}
+    pastImg: "assets/images/work-04-past.webp",
+    presentImg: "assets/images/work-04-present.webp"
+  },
+  {
+    id: 5,
+    title: "중첩된 온기 V: 연작 5",
+    aspect: "landscape",
+    pastYear: "200X",
+    presentYear: "2026",
+    location: "기억의 아카이브 장소",
+    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    pastImg: "assets/images/work-05-past.webp",
+    presentImg: "assets/images/work-05-present.webp"
+  },
+  {
+    id: 6,
+    title: "중첩된 온기 VI: 연작 6",
+    aspect: "landscape",
+    pastYear: "200X",
+    presentYear: "2026",
+    location: "기억의 아카이브 장소",
+    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    pastImg: "assets/images/work-06-past.webp",
+    presentImg: "assets/images/work-06-present.webp"
+  },
+  {
+    id: 7,
+    title: "중첩된 온기 VII: 연작 7",
+    aspect: "landscape",
+    pastYear: "200X",
+    presentYear: "2026",
+    location: "기억의 아카이브 장소",
+    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    pastImg: "assets/images/work-07-past.webp",
+    presentImg: "assets/images/work-07-present.webp"
+  },
+  {
+    id: 8,
+    title: "중첩된 온기 VIII: 연작 8",
+    aspect: "landscape",
+    pastYear: "200X",
+    presentYear: "2026",
+    location: "기억의 아카이브 장소",
+    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    pastImg: "assets/images/work-08-past.webp",
+    presentImg: "assets/images/work-08-present.webp"
+  },
+  {
+    id: 9,
+    title: "중첩된 온기 IX: 연작 9",
+    aspect: "landscape",
+    pastYear: "200X",
+    presentYear: "2026",
+    location: "기억의 아카이브 장소",
+    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    pastImg: "assets/images/work-09-past.webp",
+    presentImg: "assets/images/work-09-present.webp"
+  },
+  {
+    id: 10,
+    title: "중첩된 온기 X: 연작 10",
+    aspect: "portrait",
+    pastYear: "200X",
+    presentYear: "2026",
+    location: "기억의 아카이브 장소",
+    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    pastImg: "assets/images/work-10-past.webp",
+    presentImg: "assets/images/work-10-present.webp"
+  },
+  {
+    id: 11,
+    title: "중첩된 온기 XI: 연작 11",
+    aspect: "portrait",
+    pastYear: "200X",
+    presentYear: "2026",
+    location: "기억의 아카이브 장소",
+    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    pastImg: "assets/images/work-11-past.webp",
+    presentImg: "assets/images/work-11-present.webp"
+  },
+  {
+    id: 12,
+    title: "중첩된 온기 XII: 연작 12",
+    aspect: "landscape",
+    pastYear: "200X",
+    presentYear: "2026",
+    location: "기억의 아카이브 장소",
+    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    pastImg: "assets/images/work-12-past.webp",
+    presentImg: "assets/images/work-12-present.webp"
+  }
+];
 
 // ==========================================
 // 2. DOM 요소 연결 (ReferenceError 방지)
@@ -219,7 +296,7 @@ window.addEventListener("mouseup", () => {
 // 7. 모바일 자이로 센서 (DeviceOrientation)
 // ==========================================
 function handleOrientation(e) {
-  if (isTouching) return; // 사용자가 화면 터치 중이거나 손 뗀 직후 0.5초 동안은 자이로 중단
+  if (isTouching) return; // 터치 중 또는 손 뗀 직후 0.5초 동안은 자이로 연산 중단
   if (e.gamma === null) return;
   const gamma = Math.max(-25, Math.min(25, e.gamma));
   targetProgress = (gamma + 25) / 50;
