@@ -1,57 +1,84 @@
-// 기존 변수 선언부에 자이로 일시정지 제어용 변수 추가
+// --- 인터랙션 상태 관리 변수 ---
 let isTouching = false;
 let gyroResumeTimeout = null;
 
-// 3. 마우스 드래그 & 모바일 터치 인터랙션
-frame.addEventListener("pointerdown", (e) => {
+// 1. 공통 터치/드래그 시작 핸들러
+function onTouchStart(clientX) {
   isTouching = true;
   isDragging = true;
-  startX = e.clientX;
+  startX = clientX;
   baseProgress = currentProgress;
 
-  // 손을 대는 순간 대기 중이던 자이로 재가동 타이머 즉시 취소
   if (gyroResumeTimeout) {
     clearTimeout(gyroResumeTimeout);
     gyroResumeTimeout = null;
   }
+}
 
-  frame.setPointerCapture(e.pointerId);
-});
+// 2. 공통 터치/드래그 이동 핸들러
+function onTouchMove(clientX) {
+  if (!isDragging) return;
+  const deltaX = clientX - startX;
+  // 액자 가로폭 기준으로 100% 이동 시 전체 전환되도록 계산 (터치감 향상)
+  const frameWidth = frame.offsetWidth || 300;
+  targetProgress = Math.max(0, Math.min(1, baseProgress + (deltaX / frameWidth)));
+}
 
-frame.addEventListener("pointermove", (e) => {
-  if (!isDragging) {
-    // 데스크톱 마우스 호버 처리 (터치가 아닐 때만)
-    if (e.pointerType === "mouse") {
-      const rect = frame.getBoundingClientRect();
-      const ratio = (e.clientX - rect.left) / rect.width;
-      targetProgress = ratio;
-    }
-    return;
-  }
-
-  // 터치/드래그 시 실시간 반영
-  const deltaX = e.clientX - startX;
-  const sensitivity = 0.003;
-  targetProgress = baseProgress + (deltaX * sensitivity);
-});
-
-function handlePointerRelease(e) {
+// 3. 공통 터치/드래그 종료 핸들러 (0.5초 딜레이 복구)
+function onTouchEnd() {
   isDragging = false;
-  try { frame.releasePointerCapture(e.pointerId); } catch(err) {}
-
-  // 화면에서 손을 떼었을 때 기존 타이머 초기화 후 0.5초 뒤 자이로 복구
   if (gyroResumeTimeout) clearTimeout(gyroResumeTimeout);
   gyroResumeTimeout = setTimeout(() => {
     isTouching = false;
-  }, 500); // 0.5초 딜레이
+  }, 500); // 0.5초 대기 후 자이로 재가동
 }
 
-frame.addEventListener("pointerup", handlePointerRelease);
-frame.addEventListener("pointercancel", handlePointerRelease);
+// === [모바일 전용 네이티브 터치 이벤트] ===
+// passive: false로 지정하여 모바일 스크롤 간섭 방지
+frame.addEventListener("touchstart", (e) => {
+  if (e.touches.length > 0) {
+    onTouchStart(e.touches[0].clientX);
+  }
+}, { passive: true });
 
-// 4. 스마트폰 자이로스코프(DeviceOrientation) 연동
+frame.addEventListener("touchmove", (e) => {
+  if (e.touches.length > 0) {
+    onTouchMove(e.touches[0].clientX);
+  }
+}, { passive: true });
+
+frame.addEventListener("touchend", onTouchEnd, { passive: true });
+frame.addEventListener("touchcancel", onTouchEnd, { passive: true });
+
+// === [데스크톱 마우스 이벤트] ===
+frame.addEventListener("mousedown", (e) => {
+  onTouchStart(e.clientX);
+});
+
+window.addEventListener("mousemove", (e) => {
+  if (isDragging) {
+    onTouchMove(e.clientX);
+  } else {
+    // 마우스 호버 반응 (화면 터치가 아닐 때만)
+    const rect = frame.getBoundingClientRect();
+    if (
+      e.clientX >= rect.left &&
+      e.clientX <= rect.right &&
+      e.clientY >= rect.top &&
+      e.clientY <= rect.bottom
+    ) {
+      targetProgress = (e.clientX - rect.left) / rect.width;
+    }
+  }
+});
+
+window.addEventListener("mouseup", () => {
+  if (isDragging) onTouchEnd();
+});
+
+// === [스마트폰 자이로스코프(DeviceOrientation) 연동] ===
 function handleOrientation(e) {
-  // 사용자가 화면을 터치 중이거나 손을 뗀 직후 0.5초 동안은 자이로 연산 차단
+  // 사용자가 화면을 터치 중이거나 손을 뗀 직후 0.5초간은 자이로 연산 완전 차단
   if (isTouching) return;
 
   if (e.gamma === null) return;
