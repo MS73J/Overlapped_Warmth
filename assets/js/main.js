@@ -37,7 +37,7 @@ const exhibitionData = [
   },
   {
     id: 4,
-    title: "중첩된 온기 IV: 연작 4",
+    title: "중첩된 온기 IV: 테스트 포",
     aspect: "portrait",
     pastYear: "200X",
     presentYear: "2026",
