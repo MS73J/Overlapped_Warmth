@@ -133,7 +133,7 @@ const exhibitionData = [
     desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
     pastImg: "assets/images/work-12-past.webp",
     presentImg: "assets/images/work-12-present.webp"
-  }
+  },
   {
     id: 13,
     title: "중첩된 온기 XIII: 연작 13",
