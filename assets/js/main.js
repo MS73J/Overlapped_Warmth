@@ -4,34 +4,34 @@
 const exhibitionData = [
   {
     id: 1,
-    title: "중첩된 온기 I: 첫 등교길",
+    title: "중첩된 온기 I: 테스트",
     aspect: "landscape", // 4:3
     pastYear: "2007",
     presentYear: "2026",
-    location: "초등학교 앞 골목길",
-    desc: "가방을 메고 앞서 걷던 아이의 뒷모습을 담던 아버지의 시선. 같은 골목에서 카메라를 들고 선 나는 어느덧 그 시절 아버지의 나이가 되었습니다.",
+    location: "제주 외도동 명진빌라",
+    desc: "테스트문장",
     pastImg: "assets/images/work-01-past.webp",
     presentImg: "assets/images/work-01-present.webp"
   },
   {
     id: 2,
-    title: "중첩된 온기 II: 유달산의 바람",
+    title: "중첩된 온기 II: 테스트 투",
     aspect: "portrait", // 3:4
     pastYear: "2009",
     presentYear: "2026",
-    location: "목포 유달산 마당바위",
-    desc: "바람에 흩날리던 옷깃과 어린 미소. 세월이 흘러 같은 바위 위에 서서, 나를 향해 셔터를 누르던 아버지의 호흡을 떠올립니다.",
+    location: "제주 외도동 명진빌라",
+    desc: "테스트문장 투 생일",
     pastImg: "assets/images/work-02-past.webp",
     presentImg: "assets/images/work-02-present.webp"
   },
   {
     id: 3,
-    title: "중첩된 온기 III: 바다를 가리키며",
+    title: "중첩된 온기 III: 테스트 쓰리",
     aspect: "landscape", // 4:3
-    pastYear: "2010",
+    pastYear: "2009",
     presentYear: "2026",
-    location: "제주 서쪽 해안도로",
-    desc: "먼 수평선을 가리키던 작은 손. 그 손은 이제 카메라 그립을 단단히 쥐고 아버지의 시야 너머를 응시합니다.",
+    location: "제주 외도동 명진빌라",
+    desc: "테스트 쓰리 문장.",
     pastImg: "assets/images/work-03-past.webp",
     presentImg: "assets/images/work-03-present.webp"
   }
