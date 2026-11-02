@@ -99,6 +99,8 @@ body {
   transform-style: preserve-3d;
   transition: width 0.3s ease, height 0.3s ease, transform 0.1s ease-out;
   touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .lenticular-frame:active {
