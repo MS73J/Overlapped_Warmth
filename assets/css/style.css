@@ -24,7 +24,7 @@ body {
   flex-direction: column;
 }
 
-/* 범용 숨김 클래스 (모드 전환 충돌 방지) */
+/* 범용 숨김 클래스 */
 .hidden {
   display: none !important;
 }
@@ -164,13 +164,15 @@ body {
   cursor: grabbing;
 }
 
-/* 가로형 (4:3) & 세로형 (3:4) 자동 제어 */
-.aspect-landscape {
+/* 메인 액자에만 정확하게 적용되는 비율 제어 */
+.lenticular-frame.aspect-landscape,
+.weaving-frame.aspect-landscape {
   width: min(720px, 88vw) !important;
   height: calc(min(720px, 88vw) * (3 / 4)) !important;
 }
 
-.aspect-portrait {
+.lenticular-frame.aspect-portrait,
+.weaving-frame.aspect-portrait {
   width: min(500px, 78vw) !important;
   height: calc(min(500px, 78vw) * (4 / 3)) !important;
 }
@@ -234,7 +236,7 @@ body {
   transform-style: preserve-3d;
 }
 
-/* 1. Grid Flip & Wave */
+/* 1. Grid Flip */
 .weave-tile {
   position: relative;
   width: 100%;
@@ -382,17 +384,25 @@ body {
   margin: 0 auto;
 }
 
-/* Gallery Tray */
+/* ==========================================
+   Gallery Tray (11월 3일 원본 규격 복원)
+========================================== */
 .gallery-tray {
   border-top: 1px solid var(--border-color);
   background-color: var(--panel-bg);
   padding: 16px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .tray-scroll {
   display: flex;
-  justify-content: center; /* 11월 3일 상태에서 이 한 줄만 추가! */
-  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: auto;
+  max-width: 100%;
   overflow-x: auto;
   scroll-behavior: smooth;
   padding-bottom: 4px;
@@ -408,7 +418,9 @@ body {
 }
 
 .thumb-item {
-  flex: 0 0 auto;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  height: auto !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -424,8 +436,8 @@ body {
 }
 
 .thumb-preview {
-  width: 56px;
-  height: 42px;
+  width: 56px !important;
+  height: 42px !important;
   background-size: cover;
   background-position: center;
   border-radius: 4px;
@@ -433,8 +445,8 @@ body {
 }
 
 .thumb-item.aspect-portrait .thumb-preview {
-  width: 42px;
-  height: 56px;
+  width: 42px !important;
+  height: 56px !important;
 }
 
 .thumb-item.active .thumb-preview {
