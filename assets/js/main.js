@@ -624,7 +624,6 @@ function renderTray() {
     thumb.addEventListener("click", () => {
       currentIndex = exhibitionData.findIndex(w => w.id === item.id);
       loadCurrentArtwork();
-      thumb.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
     });
     trayContainer.appendChild(thumb);
   });
