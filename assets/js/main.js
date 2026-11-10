@@ -6,7 +6,7 @@ const exhibitionData = [
     id: 1,
     title: "중첩된 온기 I: 첫 등교길",
     aspect: "landscape",
-    weavingType: "flip", // 1번: 마우스가 스쳐 지나간 개별 타일만 플립
+    weavingType: "flip", // 1번: 마우스가 닿은 개별 타일만 플립
     isLenticular: false, // 렌티큘러 탭 제외
     pastYear: "2007",
     presentYear: "2026",
@@ -45,7 +45,7 @@ const exhibitionData = [
     id: 4,
     title: "중첩된 온기 IV: 바둑판 디졸브",
     aspect: "portrait",
-    weavingType: "dissolve", // 4번: 직조 바둑판 상호 디졸브
+    weavingType: "dissolve", // 4번: 바둑판 상호 디졸브
     isLenticular: false, // 렌티큘러 탭 제외
     pastYear: "200X",
     presentYear: "2026",
@@ -110,7 +110,7 @@ const exhibitionData = [
     id: 9,
     title: "중첩된 온기 IX: 직조 해체와 결합",
     aspect: "landscape",
-    weavingType: "slide", // 9번: 슬라이딩 어셈블
+    weavingType: "slide", // 9번: 슬라이딩 직조 해체 결합
     isLenticular: false, // 렌티큘러 탭 제외
     pastYear: "200X",
     presentYear: "2026",
@@ -136,7 +136,7 @@ const exhibitionData = [
     id: 11,
     title: "중첩된 온기 XI: 요철의 깊이",
     aspect: "portrait",
-    weavingType: "depth", // 11번: 심도 왜곡 & 조각 틸트
+    weavingType: "depth", // 11번: 종이 요철 틸트
     isLenticular: false, // 렌티큘러 탭 제외
     pastYear: "200X",
     presentYear: "2026",
@@ -196,7 +196,7 @@ const tabWeaving = document.getElementById("tab-weaving");
 // 3. 상태 관리 변수
 // ==========================================
 let currentMode = "lenticular"; // "lenticular" | "weaving"
-let currentIndex = 0; // 마스터 데이터셋 기준 index
+let currentIndex = 1; // 2번 작품(id: 2)부터 기본 표시
 let currentProgress = 0.5;
 let targetProgress = 0.5;
 let isDragging = false;
@@ -206,7 +206,7 @@ let isTouching = false;
 let gyroResumeTimeout = null;
 
 // ==========================================
-// 4. 모드 전환 (1, 4, 9, 11 필터링 적용)
+// 4. 모드 전환 및 1, 4, 9, 11 필터링
 // ==========================================
 if (tabLenticular && tabWeaving) {
   tabLenticular.addEventListener("click", () => switchMode("lenticular"));
@@ -215,10 +215,8 @@ if (tabLenticular && tabWeaving) {
 
 function getFilteredData() {
   if (currentMode === "lenticular") {
-    // 렌티큘러 모드: 1, 4, 9, 11 제외
     return exhibitionData.filter(item => item.isLenticular);
   } else {
-    // 포토 위빙 모드: 전체 작품 (특히 1, 4, 9, 11 중심)
     return exhibitionData;
   }
 }
@@ -229,7 +227,6 @@ function switchMode(mode) {
   tabWeaving.classList.toggle("active", mode === "weaving");
 
   const filtered = getFilteredData();
-  // 현재 보고 있던 작품이 필터에 없으면 첫 번째 유효 작품으로 이동
   const isCurrentValid = filtered.some(item => item.id === exhibitionData[currentIndex].id);
   if (!isCurrentValid) {
     currentIndex = exhibitionData.findIndex(item => item.id === filtered[0].id);
@@ -260,14 +257,13 @@ function loadCurrentArtwork() {
     buildWeavingArtwork(item);
   }
 
-  // 썸네일 활성 클래스 갱신
   document.querySelectorAll(".thumb-item").forEach(el => {
     el.classList.toggle("active", parseInt(el.dataset.id, 10) === item.id);
   });
 }
 
 // ==========================================
-// 5. 포토 위빙 인터랙션 빌더 (1번 개별 플립, 4번 바둑판 디졸브)
+// 5. 포토 위빙 3종 인터랙션 빌더
 // ==========================================
 function buildWeavingArtwork(item) {
   weavingFrame.innerHTML = "";
@@ -277,7 +273,7 @@ function buildWeavingArtwork(item) {
   const rows = item.aspect === "landscape" ? 9 : 12;
 
   if (type === "flip") {
-    // [1번 작품]: 마우스/터치가 지나간 특정 타일만 개별 3D 플립
+    // [1번]: 마우스가 스쳐 지나간 특정 타일만 개별 3D 플립
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -306,7 +302,6 @@ function buildWeavingArtwork(item) {
       tile.appendChild(faceFront);
       tile.appendChild(faceBack);
 
-      // 마우스가 스쳐 지나간 구역만 독립 토글
       const flipAction = () => tile.classList.toggle("flipped");
       tile.addEventListener("mouseenter", flipAction);
       tile.addEventListener("touchstart", flipAction, { passive: true });
@@ -316,7 +311,7 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(grid);
 
   } else if (type === "dissolve") {
-    // [4번 작품]: 바둑판 직조 + 마우스 위치/기울기에 따른 상호 디졸브
+    // [4번]: 바둑판 직조 + 상호 디졸브
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -333,7 +328,6 @@ function buildWeavingArtwork(item) {
       tile.style.position = "relative";
       tile.style.overflow = "hidden";
 
-      // 과거 레이어
       const layerA = document.createElement("div");
       layerA.className = "face layer-a";
       layerA.style.position = "absolute";
@@ -342,7 +336,6 @@ function buildWeavingArtwork(item) {
       layerA.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
       layerA.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
 
-      // 현재 레이어
       const layerB = document.createElement("div");
       layerB.className = "face layer-b";
       layerB.style.position = "absolute";
@@ -357,7 +350,6 @@ function buildWeavingArtwork(item) {
       tile.appendChild(layerB);
       tile.dataset.isBasePast = isBasePast;
 
-      // 마우스가 직접 지나가면 해당 구역이 반전 디졸브
       tile.addEventListener("mouseenter", () => {
         layerB.style.opacity = layerB.style.opacity === "1" ? "0" : "1";
       });
@@ -367,7 +359,7 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(grid);
 
   } else if (type === "slide") {
-    // [9번 등]: 슬라이딩 직조 결합
+    // [9번]: 슬라이딩 결합
     const strips = 12;
     const container = document.createElement("div");
     container.className = "strip-container";
@@ -394,7 +386,7 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(container);
 
   } else if (type === "depth") {
-    // [11번 등]: 종이 요철 틸트
+    // [11번]: 종이 요철 틸트
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -441,18 +433,14 @@ function updateViews(progress) {
     const type = item.weavingType || "flip";
 
     if (type === "flip") {
-      // 1번: 전체 일괄 플립 대신 액자 자체의 미세 3D 틸트만 적용
       weavingFrame.style.transform = `rotateY(${angle * 10}deg)`;
 
     } else if (type === "dissolve") {
-      // 4번: 기울기 각도에 따라 바둑판 조각들이 전체적으로 디졸브 블렌딩
       const tiles = weavingFrame.querySelectorAll(".weave-dissolve-tile");
       tiles.forEach((t) => {
         const isBasePast = t.dataset.isBasePast === "true";
         const layerB = t.querySelector(".layer-b");
         if (layerB) {
-          // 각도에 따라 교차 디졸브 비율 계산
-          const base = isBasePast ? 0 : 1;
           const blend = isBasePast ? currentProgress : (1 - currentProgress);
           layerB.style.opacity = blend;
         }
@@ -493,7 +481,7 @@ function animationLoop() {
 requestAnimationFrame(animationLoop);
 
 // ==========================================
-// 7. 터치, 마우스 및 키보드 내비게이션
+// 7. 터치, 마우스 및 키보드 제어
 // ==========================================
 const activeTargetFrame = () => (currentMode === "lenticular" ? lenticularFrame : weavingFrame);
 
@@ -560,7 +548,6 @@ window.addEventListener("mouseup", () => {
   if (isDragging) onTouchEnd();
 });
 
-// 키보드 좌우 방향키로 작품 이동 지원
 window.addEventListener("keydown", (e) => {
   const filtered = getFilteredData();
   const currentPos = filtered.findIndex(w => w.id === exhibitionData[currentIndex].id);
@@ -607,13 +594,13 @@ if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEve
 }
 
 // ==========================================
-// 9. 썸네일 트레이 렌더링 (모드별 필터링 전용)
+// 9. 썸네일 트레이 렌더링 (강제 스크롤 제거)
 // ==========================================
 function renderTray() {
   trayContainer.innerHTML = "";
   const filtered = getFilteredData();
 
-  filtered.forEach((item, fIdx) => {
+  filtered.forEach((item) => {
     const thumb = document.createElement("div");
     thumb.className = `thumb-item aspect-${item.aspect} ${item.id === exhibitionData[currentIndex].id ? "active" : ""}`;
     thumb.dataset.id = item.id;
@@ -624,6 +611,7 @@ function renderTray() {
     thumb.addEventListener("click", () => {
       currentIndex = exhibitionData.findIndex(w => w.id === item.id);
       loadCurrentArtwork();
+      // 스크롤 꼬임 방지를 위해 scrollIntoView를 완전히 배제
     });
     trayContainer.appendChild(thumb);
   });
@@ -644,4 +632,4 @@ if (modalBackdrop && modal) modalBackdrop.addEventListener("click", () => modal.
 // ==========================================
 // 11. 초기 구동 실행
 // ==========================================
-switchMode("lenticular"); // 렌티큘러 모드로 초기 구동 (1, 4, 9, 11 자동 제외)
+switchMode("lenticular");
