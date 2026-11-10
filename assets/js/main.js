@@ -1,4 +1,205 @@
 // ==========================================
+// 포토 위빙 3종 인터랙션 데이터셋
+// ==========================================
+const weavingData = [
+  {
+    id: "w1",
+    title: "중첩된 온기 — 직조 I: 파동과 잔상 (Wave & Flip)",
+    type: "flip", // 아이디어 1: 그리드 플립
+    aspect: "portrait",
+    cols: 10,
+    rows: 14,
+    pastImg: "assets/images/work-01-past.webp",
+    presentImg: "assets/images/work-01-present.webp",
+    desc: "서로 다른 시간의 피부를 격자로 쪼개어 배치했습니다. 관람자의 손길에 반응하여 조각들이 뒤집히며 그 시절 아버지의 표정과 오늘의 표정이 파동처럼 교차합니다."
+  },
+  {
+    id: "w2",
+    title: "중첩된 온기 — 직조 II: 교차 결합 (Slide & Assemble)",
+    type: "slide", // 아이디어 2: 슬라이딩 엮기
+    aspect: "landscape",
+    strips: 12,
+    pastImg: "assets/images/work-02-past.webp",
+    presentImg: "assets/images/work-02-present.webp",
+    desc: "가로와 세로의 띠가 흩어져 있다가, 기기를 기울이고 시선을 맞출 때 비로소 하나의 단단한 직조물로 엮여 들어갑니다."
+  },
+  {
+    id: "w3",
+    title: "중첩된 온기 — 직조 III: 요철의 기억 (Depth & Tilt)",
+    type: "depth", // 아이디어 3: 종이 요철 틸트
+    aspect: "portrait",
+    cols: 8,
+    rows: 12,
+    pastImg: "assets/images/work-03-past.webp",
+    presentImg: "assets/images/work-03-present.webp",
+    desc: "칼로 자르고 손으로 밀어 넣은 실제 종이의 두께감과 틈새 그림자를 입체적으로 재현하여 물질적 온기를 전합니다."
+  }
+];
+
+let currentMode = "lenticular"; // "lenticular" | "weaving"
+let currentWeavingIdx = 0;
+
+const weavingFrame = document.getElementById("weaving-frame");
+const tabLenticular = document.getElementById("tab-lenticular");
+const tabWeaving = document.getElementById("tab-weaving");
+
+// 탭 전환 핸들러
+if (tabLenticular && tabWeaving) {
+  tabLenticular.addEventListener("click", () => switchMode("lenticular"));
+  tabWeaving.addEventListener("click", () => switchMode("weaving"));
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  tabLenticular.classList.toggle("active", mode === "lenticular");
+  tabWeaving.classList.toggle("active", mode === "weaving");
+
+  if (mode === "lenticular") {
+    frame.classList.remove("hidden");
+    weavingFrame.classList.add("hidden");
+    renderTray(); // 기존 렌티큘러 썸네일
+    loadArtwork(currentIndex);
+  } else {
+    frame.classList.add("hidden");
+    weavingFrame.classList.remove("hidden");
+    renderWeavingTray(); // 위빙 전용 썸네일
+    loadWeavingArtwork(currentWeavingIdx);
+  }
+}
+
+// ------------------------------------------
+// 포토 위빙 렌더러
+// ------------------------------------------
+function loadWeavingArtwork(index) {
+  currentWeavingIdx = index;
+  const item = weavingData[index];
+
+  // 프레임 비율 설정
+  weavingFrame.className = `weaving-frame aspect-${item.aspect}`;
+  weavingFrame.innerHTML = "";
+
+  workIndexEl.textContent = `W-0${index + 1} / 03`;
+  workTitleEl.textContent = item.title;
+  workMetaEl.textContent = "Photo Weaving Archive · Hand-cut Reconstruction";
+  workDescEl.textContent = item.desc;
+
+  if (item.type === "flip") {
+    buildFlipGrid(item);
+  } else if (item.type === "slide") {
+    buildSlideWeave(item);
+  } else if (item.type === "depth") {
+    buildDepthGrid(item);
+  }
+
+  document.querySelectorAll(".thumb-item").forEach((el, idx) => {
+    el.classList.toggle("active", idx === index);
+  });
+}
+
+// [모드 1] 그리드 플립 생성
+function buildFlipGrid(item) {
+  const grid = document.createElement("div");
+  grid.className = "weave-grid";
+  grid.style.gridTemplateColumns = `repeat(${item.cols}, 1fr)`;
+  grid.style.gridTemplateRows = `repeat(${item.rows}, 1fr)`;
+
+  const total = item.cols * item.rows;
+  for (let i = 0; i < total; i++) {
+    const col = i % item.cols;
+    const row = Math.floor(i / item.cols);
+
+    const tile = document.createElement("div");
+    tile.className = "weave-tile";
+
+    const faceFront = document.createElement("div");
+    faceFront.className = "face face-front";
+    faceFront.style.backgroundImage = `url('${item.pastImg}')`;
+    faceFront.style.backgroundPosition = `${(col / (item.cols - 1)) * 100}% ${(row / (item.rows - 1)) * 100}%`;
+    faceFront.style.backgroundSize = `${item.cols * 100}% ${item.rows * 100}%`;
+
+    const faceBack = document.createElement("div");
+    faceBack.className = "face face-back";
+    faceBack.style.backgroundImage = `url('${item.presentImg}')`;
+    faceBack.style.backgroundPosition = `${(col / (item.cols - 1)) * 100}% ${(row / (item.rows - 1)) * 100}%`;
+    faceBack.style.backgroundSize = `${item.cols * 100}% ${item.rows * 100}%`;
+
+    tile.appendChild(faceFront);
+    tile.appendChild(faceBack);
+
+    // 인터랙션: 마우스 호버 또는 터치 스와이프 시 3D 회전
+    const triggerFlip = () => {
+      tile.classList.toggle("flipped");
+    };
+    tile.addEventListener("pointerenter", triggerFlip);
+    tile.addEventListener("click", triggerFlip);
+
+    grid.appendChild(tile);
+  }
+  weavingFrame.appendChild(grid);
+}
+
+// [모드 2] 슬라이드 엮기 생성
+function buildSlideWeave(item) {
+  const container = document.createElement("div");
+  container.className = "strip-container";
+
+  // 가로 스트립 (Weft)
+  for (let i = 0; i < item.strips; i++) {
+    const strip = document.createElement("div");
+    strip.className = "strip-horiz";
+    strip.style.height = `${100 / item.strips}%`;
+    strip.style.top = `${(i / item.strips) * 100}%`;
+    strip.style.backgroundImage = `url('${item.pastImg}')`;
+    strip.style.backgroundPosition = `0% ${(i / (item.strips - 1)) * 100}%`;
+    strip.dataset.direction = i % 2 === 0 ? "left" : "right";
+    container.appendChild(strip);
+  }
+
+  weavingFrame.appendChild(container);
+}
+
+// [모드 3] 종이 요철 틸트 생성
+function buildDepthGrid(item) {
+  const grid = document.createElement("div");
+  grid.className = "weave-grid";
+  grid.style.gridTemplateColumns = `repeat(${item.cols}, 1fr)`;
+  grid.style.gridTemplateRows = `repeat(${item.rows}, 1fr)`;
+
+  const total = item.cols * item.rows;
+  for (let i = 0; i < total; i++) {
+    const col = i % item.cols;
+    const row = Math.floor(i / item.cols);
+    const isWarp = (col + row) % 2 === 0;
+
+    const tile = document.createElement("div");
+    tile.className = `weave-paper-tile ${isWarp ? "tile-warp" : "tile-weft"}`;
+    tile.style.backgroundImage = `url('${isWarp ? item.pastImg : item.presentImg}')`;
+    tile.style.backgroundPosition = `${(col / (item.cols - 1)) * 100}% ${(row / (item.rows - 1)) * 100}%`;
+    tile.style.backgroundSize = `${item.cols * 100}% ${item.rows * 100}%`;
+
+    grid.appendChild(tile);
+  }
+  weavingFrame.appendChild(grid);
+}
+
+// 위빙 전용 트레이 렌더러
+function renderWeavingTray() {
+  trayContainer.innerHTML = "";
+  weavingData.forEach((item, index) => {
+    const thumb = document.createElement("div");
+    thumb.className = `thumb-item aspect-${item.aspect}`;
+    thumb.innerHTML = `
+      <div class="thumb-preview" style="background-image: url('${item.pastImg}')"></div>
+      <span class="thumb-label">W-0${index + 1}</span>
+    `;
+    thumb.addEventListener("click", () => {
+      loadWeavingArtwork(index);
+    });
+    trayContainer.appendChild(thumb);
+  });
+}
+
+// ==========================================
 // 1. 12점 연작 아카이브 데이터셋
 // ==========================================
 const exhibitionData = [
