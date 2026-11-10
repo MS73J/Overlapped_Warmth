@@ -195,8 +195,10 @@ let gyroResumeTimeout = null;
 // ==========================================
 // 4. 모드 전환 (렌티큘러 <-> 포토위빙)
 // ==========================================
-tabLenticular.addEventListener("click", () => switchMode("lenticular"));
-tabWeaving.addEventListener("click", () => switchMode("weaving"));
+if (tabLenticular && tabWeaving) {
+  tabLenticular.addEventListener("click", () => switchMode("lenticular"));
+  tabWeaving.addEventListener("click", () => switchMode("weaving"));
+}
 
 function switchMode(mode) {
   currentMode = mode;
@@ -228,15 +230,13 @@ function loadCurrentArtwork() {
   weavingFrame.className = `weaving-frame ${aspectClass} ${currentMode === "weaving" ? "" : "hidden"}`;
 
   if (currentMode === "lenticular") {
-    // 렌티큘러 모드 이미지 할당
     layerPast.style.backgroundImage = `url('${item.pastImg}')`;
     layerPresent.style.backgroundImage = `url('${item.presentImg}')`;
   } else {
-    // 포토 위빙 모드 빌드
     buildWeavingArtwork(item);
   }
 
-  // 썸네일 활성화 상태
+  // 썸네일 active 상태 갱신
   document.querySelectorAll(".thumb-item").forEach((el, idx) => {
     el.classList.toggle("active", idx === currentIndex);
   });
@@ -250,7 +250,6 @@ function buildWeavingArtwork(item) {
   const type = item.weavingType || "flip";
 
   if (type === "flip") {
-    // [아이디어 1] 그리드 플립 & 웨이브 (예: 10x14 또는 12x9)
     const cols = item.aspect === "landscape" ? 12 : 9;
     const rows = item.aspect === "landscape" ? 9 : 12;
 
@@ -268,6 +267,7 @@ function buildWeavingArtwork(item) {
       tile.className = "weave-tile";
       tile.dataset.col = c;
       tile.dataset.row = r;
+      tile.dataset.cols = cols;
 
       const faceFront = document.createElement("div");
       faceFront.className = "face face-front";
@@ -292,7 +292,6 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(grid);
 
   } else if (type === "slide") {
-    // [아이디어 2] 직조 해체 및 슬라이딩 어셈블 (가로/세로 띠)
     const strips = 12;
     const container = document.createElement("div");
     container.className = "strip-container";
@@ -308,7 +307,7 @@ function buildWeavingArtwork(item) {
       hStrip.dataset.dir = i % 2 === 0 ? -1 : 1;
       container.appendChild(hStrip);
 
-      // 세로 띠 (Present - 교차 레이어)
+      // 세로 띠 (Present)
       const vStrip = document.createElement("div");
       vStrip.className = "strip-vert";
       vStrip.style.width = `${100 / strips}%`;
@@ -321,7 +320,6 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(container);
 
   } else if (type === "depth") {
-    // [아이디어 3] 심도 왜곡 & 조각 틸트 (종이 요철 교차)
     const cols = item.aspect === "landscape" ? 12 : 9;
     const rows = item.aspect === "landscape" ? 9 : 12;
 
@@ -349,7 +347,7 @@ function buildWeavingArtwork(item) {
 }
 
 // ==========================================
-// 6. 실시간 렌더 루프 (렌티큘러 & 위빙 동기화)
+// 6. 실시간 렌더 루프 (직조 엇갈림 플립 수정)
 // ==========================================
 function updateViews(progress) {
   currentProgress = Math.max(0, Math.min(1, progress));
@@ -358,7 +356,6 @@ function updateViews(progress) {
   const angle = (currentProgress - 0.5) * 2; // -1.0 ~ 1.0
 
   if (currentMode === "lenticular") {
-    // 렌티큘러 광학 전환
     const presentOpacity = Math.max(0, Math.min(1, (currentProgress - 0.35) / 0.3));
     layerPresent.style.opacity = presentOpacity;
 
@@ -368,16 +365,21 @@ function updateViews(progress) {
     layerGlare.style.transform = `translateX(${angle * 100}%)`;
 
   } else {
-    // 포토 위빙 3D 인터랙션
     const item = exhibitionData[currentIndex];
     const type = item.weavingType || "flip";
 
     if (type === "flip") {
-      // 각도에 따른 웨이브 순차 플립
+      // 세로 한 줄 전체가 아닌 직조 체크 단위로 엇갈리는 물결 플립
       const tiles = weavingFrame.querySelectorAll(".weave-tile");
       tiles.forEach((t) => {
         const c = parseInt(t.dataset.col, 10);
-        const threshold = c / 12;
+        const r = parseInt(t.dataset.row, 10);
+        const cols = parseInt(t.dataset.cols, 10) || 12;
+
+        // 홀수/짝수 행 교차 오프셋으로 씨실과 날실이 엇갈리며 넘어감
+        const weaveOffset = (r % 2 === 0 ? 0.08 : -0.08);
+        const threshold = (c / cols) + weaveOffset;
+
         if (currentProgress > threshold) {
           t.classList.add("flipped");
         } else {
@@ -387,8 +389,7 @@ function updateViews(progress) {
       weavingFrame.style.transform = `rotateY(${angle * 8}deg)`;
 
     } else if (type === "slide") {
-      // 슬라이딩 결합: 0.5에서 완벽히 맞물리고, 양끝으로 갈수록 해체
-      const offset = (1 - Math.abs(currentProgress - 0.5) * 2); // 1.0(완전결합) ~ 0.0(해체)
+      const offset = (1 - Math.abs(currentProgress - 0.5) * 2);
       const hStrips = weavingFrame.querySelectorAll(".strip-horiz");
       const vStrips = weavingFrame.querySelectorAll(".strip-vert");
 
@@ -403,16 +404,15 @@ function updateViews(progress) {
       });
 
     } else if (type === "depth") {
-      // 종이 요철 틸트 & 틈새 음영
       const warpTiles = weavingFrame.querySelectorAll(".tile-warp");
       const weftTiles = weavingFrame.querySelectorAll(".tile-weft");
-      const lift = angle * 15;
+      const lift = angle * 16;
 
       warpTiles.forEach((t) => {
-        t.style.transform = `translateZ(${lift}px) rotateY(${angle * 5}deg)`;
+        t.style.transform = `translateZ(${lift}px) rotateY(${angle * 6}deg)`;
       });
       weftTiles.forEach((t) => {
-        t.style.transform = `translateZ(${-lift}px) rotateX(${angle * 5}deg)`;
+        t.style.transform = `translateZ(${-lift}px) rotateX(${angle * 6}deg)`;
       });
     }
   }
@@ -457,7 +457,6 @@ function onTouchEnd() {
   }, 500);
 }
 
-// 이벤트 바인딩
 [lenticularFrame, weavingFrame].forEach((el) => {
   el.addEventListener("touchstart", (e) => {
     if (e.touches && e.touches.length > 0) onTouchStart(e.touches[0].clientX);
@@ -531,7 +530,7 @@ function renderTray() {
   trayContainer.innerHTML = "";
   exhibitionData.forEach((item, index) => {
     const thumb = document.createElement("div");
-    thumb.className = `thumb-item aspect-${item.aspect}`;
+    thumb.className = `thumb-item aspect-${item.aspect} ${index === currentIndex ? "active" : ""}`;
     thumb.innerHTML = `
       <div class="thumb-preview" style="background-image: url('${item.presentImg}')"></div>
       <span class="thumb-label">${String(item.id).padStart(2, '0')}</span>
@@ -539,6 +538,7 @@ function renderTray() {
     thumb.addEventListener("click", () => {
       currentIndex = index;
       loadCurrentArtwork();
+      thumb.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
     });
     trayContainer.appendChild(thumb);
   });
@@ -556,6 +556,8 @@ if (btnStatement && modal) btnStatement.addEventListener("click", () => modal.cl
 if (btnCloseModal && modal) btnCloseModal.addEventListener("click", () => modal.classList.add("hidden"));
 if (modalBackdrop && modal) modalBackdrop.addEventListener("click", () => modal.classList.add("hidden"));
 
-// 초기 구동
+// ==========================================
+// 11. 초기 구동 실행
+// ==========================================
 renderTray();
 loadCurrentArtwork();
