@@ -12,6 +12,11 @@
 <body>
 
   <header class="exhibition-header">
+    <!-- exhibition-header 내부의 h1 아래에 탭 바 추가 -->
+    <div class="view-mode-tabs">
+      <button id="tab-lenticular" class="tab-btn active">Lenticular</button>
+      <button id="tab-weaving" class="tab-btn">Photo Weaving</button>
+    </div>
     <div class="header-left">
       <span class="series-tag">ARCHIVAL EXHIBITION</span>
       <h1 class="exhibition-title">중첩된 온기</h1>
@@ -28,7 +33,21 @@
       <p>스마트폰을 기울여 시간의 층위를 확인하세요.</p>
       <button id="btn-enable-sensor" class="btn-sensor">자이로 센서 활성화</button>
     </div>
+    <!-- 기존 lenticular-frame 바로 옆 또는 내부를 교체 가능한 컨테이너로 확장 -->
+    <div class="frame-perspective-wrapper">
+      <!-- 렌티큘러 프레임 -->
+      <div id="lenticular-frame" class="lenticular-frame aspect-landscape">
+        <div class="layer photo-layer layer-past" id="layer-past"></div>
+        <div class="layer photo-layer layer-present" id="layer-present"></div>
+        <div class="layer lenticular-ribs"></div>
+        <div class="layer lenticular-glare" id="layer-glare"></div>
+      </div>
 
+  <!-- 포토 위빙 전용 동적 캔버스 프레임 (초기 숨김) -->
+  <div id="weaving-frame" class="weaving-frame aspect-landscape hidden">
+    <!-- JS에서 그리드/스트립 조각이 동적 렌더링됨 -->
+  </div>
+</div>
     <!-- 렌티큘러 3D 뷰포트 -->
     <div class="frame-perspective-wrapper">
       <div id="lenticular-frame" class="lenticular-frame aspect-landscape">
