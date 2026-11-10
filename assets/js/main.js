@@ -6,11 +6,12 @@ const exhibitionData = [
     id: 1,
     title: "중첩된 온기 I: 첫 등교길",
     aspect: "landscape",
-    weavingType: "flip", // 01번: 그리드 플립 & 웨이브
+    weavingType: "flip", // 1번: 마우스가 스쳐 지나간 개별 타일만 플립
+    isLenticular: false, // 렌티큘러 탭 제외
     pastYear: "2007",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
-    desc: "가방을 메고 앞서 걷던 아이의 뒷모습. 격자 조각들이 관람객의 손길과 기울기에 따라 3D로 파동치며 과거와 현재를 교차시킵니다.",
+    desc: "가방을 메고 앞서 걷던 아이의 뒷모습. 손길이 닿은 자리마다 흩어진 기억의 조각들이 하나씩 뒤집혀 나타납니다.",
     pastImg: "assets/images/work-01-past.webp",
     presentImg: "assets/images/work-01-present.webp"
   },
@@ -19,10 +20,11 @@ const exhibitionData = [
     title: "중첩된 온기 II: 생일 고깔모자",
     aspect: "landscape",
     weavingType: "flip",
+    isLenticular: true,
     pastYear: "2009",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
-    desc: "아이의 장난기 어린 웃음과 어른이 된 나의 미소가 직조 조각 사이로 비쳐 나옵니다.",
+    desc: "아이의 장난기 어린 웃음과 어른이 된 나의 미소가 렌티큘러 렌즈 아래 겹쳐집니다.",
     pastImg: "assets/images/work-02-past.webp",
     presentImg: "assets/images/work-02-present.webp"
   },
@@ -31,22 +33,24 @@ const exhibitionData = [
     title: "중첩된 온기 III: 바다를 가리키며",
     aspect: "landscape",
     weavingType: "depth",
+    isLenticular: true,
     pastYear: "2009",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
-    desc: "아버지의 시선 너머 수평선을 마주보던 시간의 층위를 종이 요철감으로 드러냅니다.",
+    desc: "아버지의 시선 너머 수평선을 마주보던 시간의 층위를 포착합니다.",
     pastImg: "assets/images/work-03-past.webp",
     presentImg: "assets/images/work-03-present.webp"
   },
   {
     id: 4,
-    title: "중첩된 온기 IV: 연작 4",
+    title: "중첩된 온기 IV: 바둑판 디졸브",
     aspect: "portrait",
-    weavingType: "flip",
+    weavingType: "dissolve", // 4번: 직조 바둑판 상호 디졸브
+    isLenticular: false, // 렌티큘러 탭 제외
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    desc: "바둑판 형태로 직조된 과거와 현재의 타일들이 시선과 기울기에 따라 서로 부드럽게 스며들며 교차합니다.",
     pastImg: "assets/images/work-04-past.webp",
     presentImg: "assets/images/work-04-present.webp"
   },
@@ -55,6 +59,7 @@ const exhibitionData = [
     title: "중첩된 온기 V: 연작 5",
     aspect: "landscape",
     weavingType: "slide",
+    isLenticular: true,
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -67,6 +72,7 @@ const exhibitionData = [
     title: "중첩된 온기 VI: 연작 6",
     aspect: "landscape",
     weavingType: "depth",
+    isLenticular: true,
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -79,6 +85,7 @@ const exhibitionData = [
     title: "중첩된 온기 VII: 연작 7",
     aspect: "landscape",
     weavingType: "flip",
+    isLenticular: true,
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -91,6 +98,7 @@ const exhibitionData = [
     title: "중첩된 온기 VIII: 연작 8",
     aspect: "landscape",
     weavingType: "slide",
+    isLenticular: true,
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -102,7 +110,8 @@ const exhibitionData = [
     id: 9,
     title: "중첩된 온기 IX: 직조 해체와 결합",
     aspect: "landscape",
-    weavingType: "slide", // 09번: 직조 해체 및 슬라이딩 어셈블
+    weavingType: "slide", // 9번: 슬라이딩 어셈블
+    isLenticular: false, // 렌티큘러 탭 제외
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -115,6 +124,7 @@ const exhibitionData = [
     title: "중첩된 온기 X: 연작 10",
     aspect: "portrait",
     weavingType: "flip",
+    isLenticular: true,
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -127,10 +137,11 @@ const exhibitionData = [
     title: "중첩된 온기 XI: 요철의 깊이",
     aspect: "portrait",
     weavingType: "depth", // 11번: 심도 왜곡 & 조각 틸트
+    isLenticular: false, // 렌티큘러 탭 제외
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "교차된 인화지 조각 사이로 생기는 실제 그림자와 입체적인 Z축 깊이감을 실시간 조명 반사로 보여줍니다.",
+    desc: "교차된 인화지 조각 사이로 생기는 실제 그림자와 입체적인 Z축 깊이감을 보여줍니다.",
     pastImg: "assets/images/work-11-past.webp",
     presentImg: "assets/images/work-11-present.webp"
   },
@@ -139,6 +150,7 @@ const exhibitionData = [
     title: "중첩된 온기 XII: 연작 12",
     aspect: "landscape",
     weavingType: "flip",
+    isLenticular: true,
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -151,6 +163,7 @@ const exhibitionData = [
     title: "중첩된 온기 XIII: 마지막 시선",
     aspect: "landscape",
     weavingType: "depth",
+    isLenticular: true,
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -183,7 +196,7 @@ const tabWeaving = document.getElementById("tab-weaving");
 // 3. 상태 관리 변수
 // ==========================================
 let currentMode = "lenticular"; // "lenticular" | "weaving"
-let currentIndex = 0;
+let currentIndex = 0; // 마스터 데이터셋 기준 index
 let currentProgress = 0.5;
 let targetProgress = 0.5;
 let isDragging = false;
@@ -193,11 +206,21 @@ let isTouching = false;
 let gyroResumeTimeout = null;
 
 // ==========================================
-// 4. 모드 전환 (렌티큘러 <-> 포토위빙)
+// 4. 모드 전환 (1, 4, 9, 11 필터링 적용)
 // ==========================================
 if (tabLenticular && tabWeaving) {
   tabLenticular.addEventListener("click", () => switchMode("lenticular"));
   tabWeaving.addEventListener("click", () => switchMode("weaving"));
+}
+
+function getFilteredData() {
+  if (currentMode === "lenticular") {
+    // 렌티큘러 모드: 1, 4, 9, 11 제외
+    return exhibitionData.filter(item => item.isLenticular);
+  } else {
+    // 포토 위빙 모드: 전체 작품 (특히 1, 4, 9, 11 중심)
+    return exhibitionData;
+  }
 }
 
 function switchMode(mode) {
@@ -205,26 +228,27 @@ function switchMode(mode) {
   tabLenticular.classList.toggle("active", mode === "lenticular");
   tabWeaving.classList.toggle("active", mode === "weaving");
 
-  if (mode === "lenticular") {
-    lenticularFrame.classList.remove("hidden");
-    weavingFrame.classList.add("hidden");
-  } else {
-    lenticularFrame.classList.add("hidden");
-    weavingFrame.classList.remove("hidden");
+  const filtered = getFilteredData();
+  // 현재 보고 있던 작품이 필터에 없으면 첫 번째 유효 작품으로 이동
+  const isCurrentValid = filtered.some(item => item.id === exhibitionData[currentIndex].id);
+  if (!isCurrentValid) {
+    currentIndex = exhibitionData.findIndex(item => item.id === filtered[0].id);
   }
+
+  renderTray();
   loadCurrentArtwork();
 }
 
 function loadCurrentArtwork() {
   const item = exhibitionData[currentIndex];
-  const total = exhibitionData.length;
+  const filtered = getFilteredData();
+  const currentFilteredPos = filtered.findIndex(w => w.id === item.id) + 1;
 
-  workIndexEl.textContent = `${String(item.id).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+  workIndexEl.textContent = `${String(currentFilteredPos).padStart(2, "0")} / ${String(filtered.length).padStart(2, "0")}`;
   workTitleEl.textContent = item.title;
   workMetaEl.textContent = `${item.pastYear} / ${item.presentYear} · ${item.location}`;
   workDescEl.textContent = item.desc;
 
-  // 액자 비율 클래스 적용
   const aspectClass = item.aspect === "landscape" ? "aspect-landscape" : "aspect-portrait";
   lenticularFrame.className = `lenticular-frame ${aspectClass} ${currentMode === "lenticular" ? "" : "hidden"}`;
   weavingFrame.className = `weaving-frame ${aspectClass} ${currentMode === "weaving" ? "" : "hidden"}`;
@@ -236,23 +260,24 @@ function loadCurrentArtwork() {
     buildWeavingArtwork(item);
   }
 
-  // 썸네일 active 상태 갱신
-  document.querySelectorAll(".thumb-item").forEach((el, idx) => {
-    el.classList.toggle("active", idx === currentIndex);
+  // 썸네일 활성 클래스 갱신
+  document.querySelectorAll(".thumb-item").forEach(el => {
+    el.classList.toggle("active", parseInt(el.dataset.id, 10) === item.id);
   });
 }
 
 // ==========================================
-// 5. 포토 위빙 3종 인터랙션 빌더
+// 5. 포토 위빙 인터랙션 빌더 (1번 개별 플립, 4번 바둑판 디졸브)
 // ==========================================
 function buildWeavingArtwork(item) {
   weavingFrame.innerHTML = "";
   const type = item.weavingType || "flip";
 
-  if (type === "flip") {
-    const cols = item.aspect === "landscape" ? 12 : 9;
-    const rows = item.aspect === "landscape" ? 9 : 12;
+  const cols = item.aspect === "landscape" ? 12 : 9;
+  const rows = item.aspect === "landscape" ? 9 : 12;
 
+  if (type === "flip") {
+    // [1번 작품]: 마우스/터치가 지나간 특정 타일만 개별 3D 플립
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -265,9 +290,6 @@ function buildWeavingArtwork(item) {
 
       const tile = document.createElement("div");
       tile.className = "weave-tile";
-      tile.dataset.col = c;
-      tile.dataset.row = r;
-      tile.dataset.cols = cols;
 
       const faceFront = document.createElement("div");
       faceFront.className = "face face-front";
@@ -284,20 +306,73 @@ function buildWeavingArtwork(item) {
       tile.appendChild(faceFront);
       tile.appendChild(faceBack);
 
-      tile.addEventListener("pointerenter", () => tile.classList.toggle("flipped"));
-      tile.addEventListener("click", () => tile.classList.toggle("flipped"));
+      // 마우스가 스쳐 지나간 구역만 독립 토글
+      const flipAction = () => tile.classList.toggle("flipped");
+      tile.addEventListener("mouseenter", flipAction);
+      tile.addEventListener("touchstart", flipAction, { passive: true });
+
+      grid.appendChild(tile);
+    }
+    weavingFrame.appendChild(grid);
+
+  } else if (type === "dissolve") {
+    // [4번 작품]: 바둑판 직조 + 마우스 위치/기울기에 따른 상호 디졸브
+    const grid = document.createElement("div");
+    grid.className = "weave-grid";
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+    const total = cols * rows;
+    for (let i = 0; i < total; i++) {
+      const c = i % cols;
+      const r = Math.floor(i / cols);
+      const isBasePast = (c + r) % 2 === 0;
+
+      const tile = document.createElement("div");
+      tile.className = "weave-dissolve-tile";
+      tile.style.position = "relative";
+      tile.style.overflow = "hidden";
+
+      // 과거 레이어
+      const layerA = document.createElement("div");
+      layerA.className = "face layer-a";
+      layerA.style.position = "absolute";
+      layerA.style.inset = "0";
+      layerA.style.backgroundImage = `url('${item.pastImg}')`;
+      layerA.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
+      layerA.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+
+      // 현재 레이어
+      const layerB = document.createElement("div");
+      layerB.className = "face layer-b";
+      layerB.style.position = "absolute";
+      layerB.style.inset = "0";
+      layerB.style.backgroundImage = `url('${item.presentImg}')`;
+      layerB.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
+      layerB.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+      layerB.style.transition = "opacity 0.25s ease-out";
+      layerB.style.opacity = isBasePast ? "0" : "1";
+
+      tile.appendChild(layerA);
+      tile.appendChild(layerB);
+      tile.dataset.isBasePast = isBasePast;
+
+      // 마우스가 직접 지나가면 해당 구역이 반전 디졸브
+      tile.addEventListener("mouseenter", () => {
+        layerB.style.opacity = layerB.style.opacity === "1" ? "0" : "1";
+      });
 
       grid.appendChild(tile);
     }
     weavingFrame.appendChild(grid);
 
   } else if (type === "slide") {
+    // [9번 등]: 슬라이딩 직조 결합
     const strips = 12;
     const container = document.createElement("div");
     container.className = "strip-container";
 
     for (let i = 0; i < strips; i++) {
-      // 가로 띠 (Past)
       const hStrip = document.createElement("div");
       hStrip.className = "strip-horiz";
       hStrip.style.height = `${100 / strips}%`;
@@ -307,7 +382,6 @@ function buildWeavingArtwork(item) {
       hStrip.dataset.dir = i % 2 === 0 ? -1 : 1;
       container.appendChild(hStrip);
 
-      // 세로 띠 (Present)
       const vStrip = document.createElement("div");
       vStrip.className = "strip-vert";
       vStrip.style.width = `${100 / strips}%`;
@@ -320,9 +394,7 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(container);
 
   } else if (type === "depth") {
-    const cols = item.aspect === "landscape" ? 12 : 9;
-    const rows = item.aspect === "landscape" ? 9 : 12;
-
+    // [11번 등]: 종이 요철 틸트
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -347,7 +419,7 @@ function buildWeavingArtwork(item) {
 }
 
 // ==========================================
-// 6. 실시간 렌더 루프 (직조 엇갈림 플립 수정)
+// 6. 실시간 렌더 루프
 // ==========================================
 function updateViews(progress) {
   currentProgress = Math.max(0, Math.min(1, progress));
@@ -369,21 +441,20 @@ function updateViews(progress) {
     const type = item.weavingType || "flip";
 
     if (type === "flip") {
-      // 세로 한 줄 전체가 아닌 직조 체크 단위로 엇갈리는 물결 플립
-      const tiles = weavingFrame.querySelectorAll(".weave-tile");
+      // 1번: 전체 일괄 플립 대신 액자 자체의 미세 3D 틸트만 적용
+      weavingFrame.style.transform = `rotateY(${angle * 10}deg)`;
+
+    } else if (type === "dissolve") {
+      // 4번: 기울기 각도에 따라 바둑판 조각들이 전체적으로 디졸브 블렌딩
+      const tiles = weavingFrame.querySelectorAll(".weave-dissolve-tile");
       tiles.forEach((t) => {
-        const c = parseInt(t.dataset.col, 10);
-        const r = parseInt(t.dataset.row, 10);
-        const cols = parseInt(t.dataset.cols, 10) || 12;
-
-        // 홀수/짝수 행 교차 오프셋으로 씨실과 날실이 엇갈리며 넘어감
-        const weaveOffset = (r % 2 === 0 ? 0.08 : -0.08);
-        const threshold = (c / cols) + weaveOffset;
-
-        if (currentProgress > threshold) {
-          t.classList.add("flipped");
-        } else {
-          t.classList.remove("flipped");
+        const isBasePast = t.dataset.isBasePast === "true";
+        const layerB = t.querySelector(".layer-b");
+        if (layerB) {
+          // 각도에 따라 교차 디졸브 비율 계산
+          const base = isBasePast ? 0 : 1;
+          const blend = isBasePast ? currentProgress : (1 - currentProgress);
+          layerB.style.opacity = blend;
         }
       });
       weavingFrame.style.transform = `rotateY(${angle * 8}deg)`;
@@ -408,12 +479,8 @@ function updateViews(progress) {
       const weftTiles = weavingFrame.querySelectorAll(".tile-weft");
       const lift = angle * 16;
 
-      warpTiles.forEach((t) => {
-        t.style.transform = `translateZ(${lift}px) rotateY(${angle * 6}deg)`;
-      });
-      weftTiles.forEach((t) => {
-        t.style.transform = `translateZ(${-lift}px) rotateX(${angle * 6}deg)`;
-      });
+      warpTiles.forEach(t => t.style.transform = `translateZ(${lift}px) rotateY(${angle * 6}deg)`);
+      weftTiles.forEach(t => t.style.transform = `translateZ(${-lift}px) rotateX(${angle * 6}deg)`);
     }
   }
 }
@@ -426,7 +493,7 @@ function animationLoop() {
 requestAnimationFrame(animationLoop);
 
 // ==========================================
-// 7. 터치 및 드래그 제어 (자이로 일시정지)
+// 7. 터치, 마우스 및 키보드 내비게이션
 // ==========================================
 const activeTargetFrame = () => (currentMode === "lenticular" ? lenticularFrame : weavingFrame);
 
@@ -493,6 +560,22 @@ window.addEventListener("mouseup", () => {
   if (isDragging) onTouchEnd();
 });
 
+// 키보드 좌우 방향키로 작품 이동 지원
+window.addEventListener("keydown", (e) => {
+  const filtered = getFilteredData();
+  const currentPos = filtered.findIndex(w => w.id === exhibitionData[currentIndex].id);
+
+  if (e.key === "ArrowRight") {
+    const nextPos = (currentPos + 1) % filtered.length;
+    currentIndex = exhibitionData.findIndex(w => w.id === filtered[nextPos].id);
+    loadCurrentArtwork();
+  } else if (e.key === "ArrowLeft") {
+    const prevPos = (currentPos - 1 + filtered.length) % filtered.length;
+    currentIndex = exhibitionData.findIndex(w => w.id === filtered[prevPos].id);
+    loadCurrentArtwork();
+  }
+});
+
 // ==========================================
 // 8. 모바일 자이로 센서
 // ==========================================
@@ -524,19 +607,22 @@ if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEve
 }
 
 // ==========================================
-// 9. 썸네일 트레이 렌더링
+// 9. 썸네일 트레이 렌더링 (모드별 필터링 전용)
 // ==========================================
 function renderTray() {
   trayContainer.innerHTML = "";
-  exhibitionData.forEach((item, index) => {
+  const filtered = getFilteredData();
+
+  filtered.forEach((item, fIdx) => {
     const thumb = document.createElement("div");
-    thumb.className = `thumb-item aspect-${item.aspect} ${index === currentIndex ? "active" : ""}`;
+    thumb.className = `thumb-item aspect-${item.aspect} ${item.id === exhibitionData[currentIndex].id ? "active" : ""}`;
+    thumb.dataset.id = item.id;
     thumb.innerHTML = `
       <div class="thumb-preview" style="background-image: url('${item.presentImg}')"></div>
       <span class="thumb-label">${String(item.id).padStart(2, '0')}</span>
     `;
     thumb.addEventListener("click", () => {
-      currentIndex = index;
+      currentIndex = exhibitionData.findIndex(w => w.id === item.id);
       loadCurrentArtwork();
       thumb.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
     });
@@ -559,5 +645,4 @@ if (modalBackdrop && modal) modalBackdrop.addEventListener("click", () => modal.
 // ==========================================
 // 11. 초기 구동 실행
 // ==========================================
-renderTray();
-loadCurrentArtwork();
+switchMode("lenticular"); // 렌티큘러 모드로 초기 구동 (1, 4, 9, 11 자동 제외)
