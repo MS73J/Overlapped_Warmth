@@ -386,38 +386,35 @@ body {
 .gallery-tray {
   border-top: 1px solid var(--border-color);
   background-color: var(--panel-bg);
-  padding: 12px 16px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 16px 24px;
 }
 
 .tray-scroll {
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 10px;               /* 썸네일 간격 */
-  width: 100%;
-  max-width: 960px;        /* 전체 트레이 최대 너비 */
-  overflow-x: visible;     /* 스크롤바 강제 제거 및 한눈에 노출 */
-  padding: 4px 0;
+  justify-content: center; /* 11월 3일 상태에서 이 한 줄만 추가! */
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 4px;
 }
 
-/* 스크롤바 숨김 */
 .tray-scroll::-webkit-scrollbar {
-  display: none;
+  height: 4px;
 }
 
-/* 썸네일 개별 아이템: 11-03 비율에 맞춘 고정 크기 */
+.tray-scroll::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 2px;
+}
+
 .thumb-item {
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   cursor: pointer;
-  opacity: 0.5;
+  opacity: 0.6;
   transition: opacity 0.2s, transform 0.2s;
 }
 
@@ -426,25 +423,23 @@ body {
   transform: translateY(-2px);
 }
 
-/* 가로형 썸네일 박스 */
 .thumb-preview {
-  width: 50px;
-  height: 38px;
+  width: 56px;
+  height: 42px;
   background-size: cover;
   background-position: center;
-  border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  border: 1px solid transparent;
 }
 
-/* 세로형 썸네일 박스 */
 .thumb-item.aspect-portrait .thumb-preview {
-  width: 32px;
-  height: 42px;
+  width: 42px;
+  height: 56px;
 }
 
 .thumb-item.active .thumb-preview {
   border-color: var(--accent);
-  box-shadow: 0 0 8px rgba(212, 163, 115, 0.5);
+  box-shadow: 0 0 8px rgba(212, 163, 115, 0.4);
 }
 
 .thumb-label {
