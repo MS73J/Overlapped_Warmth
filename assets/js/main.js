@@ -12,7 +12,7 @@ const exhibitionData = [
     id: 1,
     title: "중첩된 온기 I: 첫 등교길",
     aspect: "landscape",
-    mediaType: "flip", // 포토위빙 전용
+    mediaType: "dissolve", // 포토위빙 전용
     pastYear: "2007",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
@@ -48,7 +48,7 @@ const exhibitionData = [
     id: 4,
     title: "중첩된 온기 IV: 바둑판 디졸브",
     aspect: "portrait",
-    mediaType: "dissolve", // 포토위빙 전용
+    mediaType: "slide", // 포토위빙 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -60,7 +60,7 @@ const exhibitionData = [
     id: 5,
     title: "중첩된 온기 V: 연작 5",
     aspect: "landscape",
-    mediaType: "slide", // 포토위빙 전용
+    mediaType: "flip", // 포토위빙 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -72,7 +72,7 @@ const exhibitionData = [
     id: 6,
     title: "중첩된 온기 VI: 연작 6",
     aspect: "landscape",
-    mediaType: "lenticular", // 렌티큘러 전용
+    mediaType: "depth", // 포토위빙 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
