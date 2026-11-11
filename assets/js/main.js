@@ -359,29 +359,66 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(grid);
 
   } else if (type === "slide") {
-    // [9번]: 슬라이딩 결합
-    const strips = 12;
+    // [개편된 직조 슬라이드]: 가로 띠들이 엇갈려 슬라이딩되며 중앙에서 직조 체크무늬 형성
+    const rows = item.aspect === "landscape" ? 10 : 14;
+    const cols = item.aspect === "landscape" ? 14 : 10;
     const container = document.createElement("div");
-    container.className = "strip-container";
+    container.className = "weave-slide-container";
+    container.style.position = "absolute";
+    container.style.inset = "0";
+    container.style.overflow = "hidden";
 
-    for (let i = 0; i < strips; i++) {
-      const hStrip = document.createElement("div");
-      hStrip.className = "strip-horiz";
-      hStrip.style.height = `${100 / strips}%`;
-      hStrip.style.top = `${(i / strips) * 100}%`;
-      hStrip.style.backgroundImage = `url('${item.pastImg}')`;
-      hStrip.style.backgroundPosition = `0% ${(i / (strips - 1)) * 100}%`;
-      hStrip.dataset.dir = i % 2 === 0 ? -1 : 1;
-      container.appendChild(hStrip);
+    for (let r = 0; r < rows; r++) {
+      const rowStrip = document.createElement("div");
+      rowStrip.className = "slide-row-strip";
+      rowStrip.dataset.row = r;
+      rowStrip.style.position = "absolute";
+      rowStrip.style.left = "0";
+      rowStrip.style.top = `${(r / rows) * 100}%`;
+      rowStrip.style.width = "100%";
+      rowStrip.style.height = `${100 / rows}%`;
+      rowStrip.style.display = "flex";
+      rowStrip.style.overflow = "hidden";
 
-      const vStrip = document.createElement("div");
-      vStrip.className = "strip-vert";
-      vStrip.style.width = `${100 / strips}%`;
-      vStrip.style.left = `${(i / strips) * 100}%`;
-      vStrip.style.backgroundImage = `url('${item.presentImg}')`;
-      vStrip.style.backgroundPosition = `${(i / (strips - 1)) * 100}% 0%`;
-      vStrip.dataset.dir = i % 2 === 0 ? 1 : -1;
-      container.appendChild(vStrip);
+      // r이 짝수인지 홀수인지에 따라 기본 방향 설정
+      rowStrip.dataset.isEven = (r % 2 === 0);
+
+      // 개별 띠 내부에 바둑판 셀(Past / Present 교차) 배치
+      for (let c = 0; c < cols; c++) {
+        const cell = document.createElement("div");
+        cell.className = "slide-cell";
+        cell.style.flex = `0 0 ${100 / cols}%`;
+        cell.style.height = "100%";
+        cell.style.position = "relative";
+
+        const isPastInitial = (r + c) % 2 === 0;
+
+        // 과거 레이어
+        const pastFace = document.createElement("div");
+        pastFace.className = "face-past";
+        pastFace.style.position = "absolute";
+        pastFace.style.inset = "0";
+        pastFace.style.backgroundImage = `url('${item.pastImg}')`;
+        pastFace.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
+        pastFace.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+
+        // 현재 레이어
+        const presentFace = document.createElement("div");
+        presentFace.className = "face-present";
+        presentFace.style.position = "absolute";
+        presentFace.style.inset = "0";
+        presentFace.style.backgroundImage = `url('${item.presentImg}')`;
+        presentFace.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
+        presentFace.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+        presentFace.style.opacity = "0";
+
+        cell.appendChild(pastFace);
+        cell.appendChild(presentFace);
+        cell.dataset.isPastInitial = isPastInitial;
+
+        rowStrip.appendChild(cell);
+      }
+      container.appendChild(rowStrip);
     }
     weavingFrame.appendChild(container);
 
