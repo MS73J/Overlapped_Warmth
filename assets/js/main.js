@@ -273,11 +273,12 @@ function buildWeavingArtwork(item) {
   const rows = item.aspect === "landscape" ? 9 : 12;
 
   if (type === "flip") {
-    // [1번]: 마우스 호버 및 모바일 터치 드래그(문지르기)로 타일 개별 3D 플립
+    // [1번]: 모바일 터치 스와이프 & 데스크톱 마우스 호버 완벽 지원
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    grid.style.touchAction = "none"; // 브라우저 기본 제스처 스크롤 원천 차단
 
     const total = cols * rows;
     for (let i = 0; i < total; i++) {
@@ -289,12 +290,14 @@ function buildWeavingArtwork(item) {
 
       const faceFront = document.createElement("div");
       faceFront.className = "face face-front";
+      faceFront.style.pointerEvents = "none"; // 좌표 탐색 시 자식 요소 간섭 방지
       faceFront.style.backgroundImage = `url('${item.pastImg}')`;
       faceFront.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
       faceFront.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
 
       const faceBack = document.createElement("div");
       faceBack.className = "face face-back";
+      faceBack.style.pointerEvents = "none"; // 좌표 탐색 시 자식 요소 간섭 방지
       faceBack.style.backgroundImage = `url('${item.presentImg}')`;
       faceBack.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
       faceBack.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
@@ -302,33 +305,34 @@ function buildWeavingArtwork(item) {
       tile.appendChild(faceFront);
       tile.appendChild(faceBack);
 
-      // 데스크톱 마우스 호버
+      // 데스크톱 마우스 호버 및 단순 클릭(탭)
       tile.addEventListener("mouseenter", () => tile.classList.toggle("flipped"));
-      // 모바일 단순 클릭(탭)
       tile.addEventListener("click", () => tile.classList.toggle("flipped"));
 
       grid.appendChild(tile);
     }
 
-    // 모바일 터치 드래그(문지르기) 실시간 감지
-    let lastFlippedTile = null;
-    const handleTouchMove = (e) => {
-      if (!e.touches || e.touches.length === 0) return;
-      const touch = e.touches[0];
-      const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (!targetEl) return;
+    // 모바일 터치 드래그(문지르기) 좌표 기반 실시간 감지
+    let lastTile = null;
+    const onSwipeMove = (e) => {
+      if (e.cancelable) e.preventDefault(); // 화면 바운스/스크롤 방지
+      const touch = e.touches ? e.touches[0] : e;
+      if (!touch) return;
 
-      const tile = targetEl.closest(".weave-tile");
-      if (tile && tile !== lastFlippedTile) {
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!target) return;
+
+      const tile = target.closest(".weave-tile");
+      if (tile && tile !== lastTile) {
         tile.classList.toggle("flipped");
-        lastFlippedTile = tile;
+        lastTile = tile;
       }
     };
 
-    grid.addEventListener("touchmove", handleTouchMove, { passive: true });
-    grid.addEventListener("touchend", () => {
-      lastFlippedTile = null;
-    });
+    grid.addEventListener("touchstart", onSwipeMove, { passive: false });
+    grid.addEventListener("touchmove", onSwipeMove, { passive: false });
+    grid.addEventListener("touchend", () => { lastTile = null; });
+    grid.addEventListener("touchcancel", () => { lastTile = null; });
 
     weavingFrame.appendChild(grid);
 
@@ -555,7 +559,7 @@ function animationLoop() {
 requestAnimationFrame(animationLoop);
 
 // ==========================================
-// 7. 터치, 마우스 및 키보드 제어
+// 7. 터치, 마우스 및 키보드 제어 (플립 터치 충돌 해소)
 // ==========================================
 const activeTargetFrame = () => (currentMode === "lenticular" ? lenticularFrame : weavingFrame);
 
@@ -588,17 +592,30 @@ function onTouchEnd() {
 
 [lenticularFrame, weavingFrame].forEach((el) => {
   el.addEventListener("touchstart", (e) => {
+    // 1번 작품(flip)일 때는 전역 드래그를 양보하여 타일 터치 플립 보장
+    if (currentMode === "weaving" && exhibitionData[currentIndex].weavingType === "flip") {
+      return;
+    }
     if (e.touches && e.touches.length > 0) onTouchStart(e.touches[0].clientX);
   }, { passive: true });
 
   el.addEventListener("touchmove", (e) => {
+    // 1번 작품(flip)일 때는 전역 드래그를 멈추고 타일 문지르기에 양보
+    if (currentMode === "weaving" && exhibitionData[currentIndex].weavingType === "flip") {
+      return;
+    }
     if (e.touches && e.touches.length > 0) onTouchMove(e.touches[0].clientX);
   }, { passive: true });
 
   el.addEventListener("touchend", onTouchEnd, { passive: true });
   el.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
-  el.addEventListener("mousedown", (e) => onTouchStart(e.clientX));
+  el.addEventListener("mousedown", (e) => {
+    if (currentMode === "weaving" && exhibitionData[currentIndex].weavingType === "flip") {
+      return;
+    }
+    onTouchStart(e.clientX);
+  });
 });
 
 window.addEventListener("mousemove", (e) => {
