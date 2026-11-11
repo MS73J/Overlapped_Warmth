@@ -6,7 +6,7 @@ const exhibitionData = [
     id: 1,
     title: "중첩된 온기 I: 첫 등교길",
     aspect: "landscape",
-    weavingType: "flip", // 1번: 마우스가 닿은 개별 타일만 플립
+    weavingType: "flip", // 1번: 마우스 호버 및 모바일 터치 드래그로 타일 플립
     isLenticular: false, // 렌티큘러 탭 제외
     pastYear: "2007",
     presentYear: "2026",
@@ -273,6 +273,7 @@ function buildWeavingArtwork(item) {
   const rows = item.aspect === "landscape" ? 9 : 12;
 
   if (type === "flip") {
+    // [1번]: 마우스 호버 및 모바일 터치 드래그(문지르기)로 타일 개별 3D 플립
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -301,15 +302,38 @@ function buildWeavingArtwork(item) {
       tile.appendChild(faceFront);
       tile.appendChild(faceBack);
 
-      const flipAction = () => tile.classList.toggle("flipped");
-      tile.addEventListener("mouseenter", flipAction);
-      tile.addEventListener("touchstart", flipAction, { passive: true });
+      // 데스크톱 마우스 호버
+      tile.addEventListener("mouseenter", () => tile.classList.toggle("flipped"));
+      // 모바일 단순 클릭(탭)
+      tile.addEventListener("click", () => tile.classList.toggle("flipped"));
 
       grid.appendChild(tile);
     }
+
+    // 모바일 터치 드래그(문지르기) 실시간 감지
+    let lastFlippedTile = null;
+    const handleTouchMove = (e) => {
+      if (!e.touches || e.touches.length === 0) return;
+      const touch = e.touches[0];
+      const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!targetEl) return;
+
+      const tile = targetEl.closest(".weave-tile");
+      if (tile && tile !== lastFlippedTile) {
+        tile.classList.toggle("flipped");
+        lastFlippedTile = tile;
+      }
+    };
+
+    grid.addEventListener("touchmove", handleTouchMove, { passive: true });
+    grid.addEventListener("touchend", () => {
+      lastFlippedTile = null;
+    });
+
     weavingFrame.appendChild(grid);
 
   } else if (type === "dissolve") {
+    // [4번]: 바둑판 직조 + 상호 디졸브
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -357,6 +381,7 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(grid);
 
   } else if (type === "slide") {
+    // [5, 8, 9번]: 가로 띠 엇갈림 직조 슬라이드
     const slideRows = item.aspect === "landscape" ? 10 : 14;
     const slideCols = item.aspect === "landscape" ? 14 : 10;
     const container = document.createElement("div");
@@ -415,6 +440,7 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(container);
 
   } else if (type === "depth") {
+    // [11번]: 종이 요철 틸트
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -439,7 +465,7 @@ function buildWeavingArtwork(item) {
 }
 
 // ==========================================
-// 6. 실시간 렌더 루프 (슬라이드 연동 수정)
+// 6. 실시간 렌더 루프
 // ==========================================
 function updateViews(progress) {
   currentProgress = Math.max(0, Math.min(1, progress));
@@ -476,7 +502,6 @@ function updateViews(progress) {
       weavingFrame.style.transform = `rotateY(${angle * 8}deg)`;
 
     } else if (type === "slide") {
-      // 신규 슬라이드 동기화 (좌측: 과거 원형, 중앙: 체크 직조, 우측: 현재 원형)
       const rows = weavingFrame.querySelectorAll(".slide-row-strip");
       const weaveIntensity = 1 - Math.abs(currentProgress - 0.5) * 2; // 0.0 -> 1.0(중앙) -> 0.0
 
