@@ -10,157 +10,157 @@
 const exhibitionData = [
   {
     id: 1,
-    title: "중첩된 온기 I: 첫 등교길",
+    title: "중첩된 온기 I: 2007",
     aspect: "landscape",
     mediaType: "dissolve", // 포토위빙 전용
     pastYear: "2007",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
-    desc: "가방을 메고 앞서 걷던 아이의 뒷모습. 손길이 닿은 자리마다 흩어진 기억의 조각들이 하나씩 뒤집혀 나타납니다.",
+    desc: "테스트 문장입니다. 2007년 명진빌라에서 아버지가 촬영한 저의 모습입니다.",
     pastImg: "assets/images/work-01-past.webp",
     presentImg: "assets/images/work-01-present.webp"
   },
   {
     id: 2,
-    title: "중첩된 온기 II: 생일 고깔모자",
+    title: "중첩된 온기 II: 2007",
     aspect: "landscape",
     mediaType: "lenticular", // 렌티큘러 전용
-    pastYear: "2009",
+    pastYear: "2007",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
-    desc: "아이의 장난기 어린 웃음과 어른이 된 나의 미소가 렌티큘러 렌즈 아래 겹쳐집니다.",
+    desc: "2007년 7월 30일 생일을 맞이하여 행복한 모습입니다.",
     pastImg: "assets/images/work-02-past.webp",
     presentImg: "assets/images/work-02-present.webp"
   },
   {
     id: 3,
-    title: "중첩된 온기 III: 바다를 가리키며",
+    title: "중첩된 온기 III: 2007",
     aspect: "landscape",
     mediaType: "lenticular", // 렌티큘러 전용
-    pastYear: "2009",
+    pastYear: "2007",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
-    desc: "아버지의 시선 너머 수평선을 마주보던 시간의 층위를 포착합니다.",
+    desc: "어릴적 저는 그저 해맑은 모습입니다.",
     pastImg: "assets/images/work-03-past.webp",
     presentImg: "assets/images/work-03-present.webp"
   },
   {
     id: 4,
-    title: "중첩된 온기 IV: 바둑판 디졸브",
+    title: "중첩된 온기 IV: 2009",
     aspect: "portrait",
     mediaType: "slide", // 포토위빙 전용
-    pastYear: "200X",
+    pastYear: "2009",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "바둑판 형태로 직조된 과거와 현재의 타일들이 시선과 기울기에 따라 서로 부드럽게 스며들며 교차합니다.",
+    desc: "테스트 문장입니다. 솜사탕 먹고 있습니다.",
     pastImg: "assets/images/work-04-past.webp",
     presentImg: "assets/images/work-04-present.webp"
   },
   {
     id: 5,
-    title: "중첩된 온기 V: 연작 5",
+    title: "중첩된 온기 V: 2007",
     aspect: "landscape",
     mediaType: "flip", // 포토위빙 전용
-    pastYear: "200X",
+    pastYear: "2007",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "기억의 파편들이 가로와 세로의 띠가 되어 결합합니다.",
+    desc: "테스트문장입니다. 재밌는 얼굴을 하고 있네요.",
     pastImg: "assets/images/work-05-past.webp",
     presentImg: "assets/images/work-05-present.webp"
   },
   {
     id: 6,
-    title: "중첩된 온기 VI: 연작 6",
+    title: "중첩된 온기 VI: 2009",
     aspect: "landscape",
     mediaType: "depth", // 포토위빙 전용
-    pastYear: "200X",
+    pastYear: "2009",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "손으로 엮은 인화지의 물질적 질감을 화면 위에 재현합니다.",
+    desc: "테스트 문장입니다. 뎁스 오류 수정중입니다.",
     pastImg: "assets/images/work-06-past.webp",
     presentImg: "assets/images/work-06-present.webp"
   },
   {
     id: 7,
-    title: "중첩된 온기 VII: 연작 7",
+    title: "중첩된 온기 VII: 2010",
     aspect: "landscape",
     mediaType: "lenticular", // 렌티큘러 전용
-    pastYear: "200X",
+    pastYear: "2010",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    desc: "테스트 문장입니다. 이 사진을 렌티큘러 전시할 예정입니다.",
     pastImg: "assets/images/work-07-past.webp",
     presentImg: "assets/images/work-07-present.webp"
   },
   {
     id: 8,
-    title: "중첩된 온기 VIII: 연작 8",
+    title: "중첩된 온기 VIII: 2009",
     aspect: "landscape",
     mediaType: "slide", // 포토위빙 전용
-    pastYear: "200X",
+    pastYear: "2009",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "기억의 띠들이 서서히 맞물려 하나의 상을 형성합니다.",
+    desc: "테스트 문장입니다. 누가 공항도둑 같다고 하는데 그렇게 보이긴 합니다.",
     pastImg: "assets/images/work-08-past.webp",
     presentImg: "assets/images/work-08-present.webp"
   },
   {
     id: 9,
-    title: "중첩된 온기 IX: 직조 해체와 결합",
+    title: "중첩된 온기 IX: 2010",
     aspect: "landscape",
     mediaType: "slide", // 포토위빙 전용
-    pastYear: "200X",
+    pastYear: "2010",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "분리되어 흩어져 있던 가로와 세로의 시간 띠들이 관람자의 시점 각도에 맞춰 단단히 맞물려 완성됩니다.",
+    desc: "테스트 문장입니다. 그냥 귀신인데요",
     pastImg: "assets/images/work-09-past.webp",
     presentImg: "assets/images/work-09-present.webp"
   },
   {
     id: 10,
-    title: "중첩된 온기 X: 연작 10",
+    title: "중첩된 온기 X: 2012",
     aspect: "portrait",
     mediaType: "lenticular", // 렌티큘러 전용
-    pastYear: "200X",
+    pastYear: "2012",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    desc: "테스트 문장입니다. 부담스럽습니다.",
     pastImg: "assets/images/work-10-past.webp",
     presentImg: "assets/images/work-10-present.webp"
   },
   {
     id: 11,
-    title: "중첩된 온기 XI: 요철의 깊이",
+    title: "중첩된 온기 XI: 2013",
     aspect: "portrait",
     mediaType: "depth", // 포토위빙 전용
-    pastYear: "200X",
+    pastYear: "2013",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "교차된 인화지 조각 사이로 생기는 실제 그림자와 입체적인 Z축 깊이감을 보여줍니다.",
+    desc: "테스트 문장입니다. 스케이트 탄다고 지쳤습니다.",
     pastImg: "assets/images/work-11-past.webp",
     presentImg: "assets/images/work-11-present.webp"
   },
   {
     id: 12,
-    title: "중첩된 온기 XII: 연작 12",
+    title: "중첩된 온기 XII: 2014",
     aspect: "landscape",
     mediaType: "lenticular", // 렌티큘러 전용
-    pastYear: "200X",
+    pastYear: "2014",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    desc: "테스트 문장입니다. 중학생떄랑 얼굴이 다른게 없네요.",
     pastImg: "assets/images/work-12-past.webp",
     presentImg: "assets/images/work-12-present.webp"
   },
   {
     id: 13,
-    title: "중첩된 온기 XIII: 마지막 시선",
+    title: "중첩된 온기 XIII: 2018",
     aspect: "landscape",
     mediaType: "lenticular", // 렌티큘러 전용
-    pastYear: "200X",
+    pastYear: "2018",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "두 시간대가 완전히 교차하며 하나의 자화상으로 응고됩니다.",
+    desc: "테스트 문장입니다. 8년이나 지났는데 얼굴이 똑같네요.",
     pastImg: "assets/images/work-13-past.webp",
     presentImg: "assets/images/work-13-present.webp"
   }
