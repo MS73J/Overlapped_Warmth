@@ -204,13 +204,10 @@ let gyroResumeTimeout = null;
 // ==========================================
 function getFilteredData() {
   if (currentTab === "lenticular") {
-    // 렌티큘러 전용 탭: mediaType이 lenticular인 것만
     return exhibitionData.filter(item => item.mediaType === "lenticular");
   } else if (currentTab === "weaving") {
-    // 포토 위빙 전용 탭: mediaType이 lenticular가 아닌 것만 (flip, dissolve, slide, depth)
     return exhibitionData.filter(item => item.mediaType !== "lenticular");
   } else {
-    // ALL 탭: 전체 13개 노출
     return exhibitionData;
   }
 }
@@ -250,7 +247,6 @@ function loadCurrentArtwork() {
   const aspectClass = item.aspect === "landscape" ? "aspect-landscape" : "aspect-portrait";
   const isLenti = item.mediaType === "lenticular";
 
-  // 현재 작품의 mediaType에 따라 알맞은 뷰어 자동 활성화
   lenticularFrame.className = `lenticular-frame ${aspectClass} ${isLenti ? "" : "hidden"}`;
   weavingFrame.className = `weaving-frame ${aspectClass} ${!isLenti ? "" : "hidden"}`;
 
@@ -339,7 +335,7 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(grid);
 
   } else if (type === "dissolve") {
-    // [4번]: 바둑판 직조 + 상호 디졸브
+    // [4번 디졸브]: 양끝 원형, 중앙 바둑판 직조 교차
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -349,38 +345,35 @@ function buildWeavingArtwork(item) {
     for (let i = 0; i < total; i++) {
       const c = i % cols;
       const r = Math.floor(i / cols);
-      const isBasePast = (c + r) % 2 === 0;
+      const isCheckCell = (c + r) % 2 === 1; // 바둑판 체크 무늬 셀 구분
 
       const tile = document.createElement("div");
       tile.className = "weave-dissolve-tile";
       tile.style.position = "relative";
       tile.style.overflow = "hidden";
+      tile.dataset.isCheckCell = isCheckCell;
 
-      const layerA = document.createElement("div");
-      layerA.className = "face layer-a";
-      layerA.style.position = "absolute";
-      layerA.style.inset = "0";
-      layerA.style.backgroundImage = `url('${item.pastImg}')`;
-      layerA.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
-      layerA.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+      // 과거 베이스 레이어 (항상 아래에 위치)
+      const layerPastFace = document.createElement("div");
+      layerPastFace.className = "face layer-past-face";
+      layerPastFace.style.position = "absolute";
+      layerPastFace.style.inset = "0";
+      layerPastFace.style.backgroundImage = `url('${item.pastImg}')`;
+      layerPastFace.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
+      layerPastFace.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
 
-      const layerB = document.createElement("div");
-      layerB.className = "face layer-b";
-      layerB.style.position = "absolute";
-      layerB.style.inset = "0";
-      layerB.style.backgroundImage = `url('${item.presentImg}')`;
-      layerB.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
-      layerB.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
-      layerB.style.transition = "opacity 0.25s ease-out";
-      layerB.style.opacity = isBasePast ? "0" : "1";
+      // 현재 오버레이 레이어 (불투명도로 디졸브 전이)
+      const layerPresentFace = document.createElement("div");
+      layerPresentFace.className = "face layer-present-face";
+      layerPresentFace.style.position = "absolute";
+      layerPresentFace.style.inset = "0";
+      layerPresentFace.style.backgroundImage = `url('${item.presentImg}')`;
+      layerPresentFace.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
+      layerPresentFace.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+      layerPresentFace.style.opacity = "0"; // 좌측(0.0) 기본은 과거 원본
 
-      tile.appendChild(layerA);
-      tile.appendChild(layerB);
-      tile.dataset.isBasePast = isBasePast;
-
-      tile.addEventListener("mouseenter", () => {
-        layerB.style.opacity = layerB.style.opacity === "1" ? "0" : "1";
-      });
+      tile.appendChild(layerPastFace);
+      tile.appendChild(layerPresentFace);
 
       grid.appendChild(tile);
     }
@@ -496,16 +489,31 @@ function updateViews(progress) {
       weavingFrame.style.transform = `rotateY(${angle * 10}deg)`;
 
     } else if (type === "dissolve") {
+      // [신규 디졸브 로직]: 
+      // progress = 0.0 -> 모든 타일 opacity: 0 (완전 과거 원형)
+      // progress = 0.5 -> 체크 무늬 타일만 opacity: 1 (바둑판 직조 교차)
+      // progress = 1.0 -> 모든 타일 opacity: 1 (완전 현재 원형)
       const tiles = weavingFrame.querySelectorAll(".weave-dissolve-tile");
       tiles.forEach((t) => {
-        const isBasePast = t.dataset.isBasePast === "true";
-        const layerB = t.querySelector(".layer-b");
-        if (layerB) {
-          const blend = isBasePast ? currentProgress : (1 - currentProgress);
-          layerB.style.opacity = blend;
+        const isCheck = t.dataset.isCheckCell === "true";
+        const presentFace = t.querySelector(".layer-present-face");
+        if (!presentFace) return;
+
+        let targetOpacity = 0;
+        if (currentProgress <= 0.5) {
+          // 0.0 ~ 0.5 구간: 체크 셀만 서서히 현재 사진으로 바뀌어 0.5에서 바둑판 형성
+          const localT = currentProgress / 0.5; // 0.0 -> 1.0
+          targetOpacity = isCheck ? localT : 0;
+        } else {
+          // 0.5 ~ 1.0 구간: 나머지 셀들도 서서히 현재 사진으로 바뀌어 1.0에서 현재 원본 완성
+          const localT = (currentProgress - 0.5) / 0.5; // 0.0 -> 1.0
+          targetOpacity = isCheck ? 1 : localT;
         }
+
+        presentFace.style.opacity = targetOpacity;
       });
-      weavingFrame.style.transform = `rotateY(${angle * 8}deg)`;
+
+      weavingFrame.style.transform = `rotateY(${angle * 6}deg)`;
 
     } else if (type === "slide") {
       const rows = weavingFrame.querySelectorAll(".slide-row-strip");
