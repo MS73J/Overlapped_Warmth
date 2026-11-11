@@ -58,7 +58,7 @@ const exhibitionData = [
     id: 5,
     title: "중첩된 온기 V: 연작 5",
     aspect: "landscape",
-    weavingType: "slide",
+    weavingType: "slide", // 5번: 양끝 원형, 중앙 교차 슬라이드
     isLenticular: true,
     pastYear: "200X",
     presentYear: "2026",
@@ -196,7 +196,7 @@ const tabWeaving = document.getElementById("tab-weaving");
 // 3. 상태 관리 변수
 // ==========================================
 let currentMode = "lenticular"; // "lenticular" | "weaving"
-let currentIndex = 1; // 2번 작품(id: 2)부터 기본 표시
+let currentIndex = 1; // 2번 작품부터 기본 표시
 let currentProgress = 0.5;
 let targetProgress = 0.5;
 let isDragging = false;
@@ -206,7 +206,7 @@ let isTouching = false;
 let gyroResumeTimeout = null;
 
 // ==========================================
-// 4. 모드 전환 및 1, 4, 9, 11 필터링
+// 4. 모드 전환 및 필터링
 // ==========================================
 if (tabLenticular && tabWeaving) {
   tabLenticular.addEventListener("click", () => switchMode("lenticular"));
@@ -273,7 +273,6 @@ function buildWeavingArtwork(item) {
   const rows = item.aspect === "landscape" ? 9 : 12;
 
   if (type === "flip") {
-    // [1번]: 마우스가 스쳐 지나간 특정 타일만 개별 3D 플립
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -311,7 +310,6 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(grid);
 
   } else if (type === "dissolve") {
-    // [4번]: 바둑판 직조 + 상호 디졸브
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -359,57 +357,51 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(grid);
 
   } else if (type === "slide") {
-    // [개편된 직조 슬라이드]: 가로 띠들이 엇갈려 슬라이딩되며 중앙에서 직조 체크무늬 형성
-    const rows = item.aspect === "landscape" ? 10 : 14;
-    const cols = item.aspect === "landscape" ? 14 : 10;
+    const slideRows = item.aspect === "landscape" ? 10 : 14;
+    const slideCols = item.aspect === "landscape" ? 14 : 10;
     const container = document.createElement("div");
     container.className = "weave-slide-container";
     container.style.position = "absolute";
     container.style.inset = "0";
     container.style.overflow = "hidden";
 
-    for (let r = 0; r < rows; r++) {
+    for (let r = 0; r < slideRows; r++) {
       const rowStrip = document.createElement("div");
       rowStrip.className = "slide-row-strip";
       rowStrip.dataset.row = r;
       rowStrip.style.position = "absolute";
       rowStrip.style.left = "0";
-      rowStrip.style.top = `${(r / rows) * 100}%`;
+      rowStrip.style.top = `${(r / slideRows) * 100}%`;
       rowStrip.style.width = "100%";
-      rowStrip.style.height = `${100 / rows}%`;
+      rowStrip.style.height = `${100 / slideRows}%`;
       rowStrip.style.display = "flex";
       rowStrip.style.overflow = "hidden";
-
-      // r이 짝수인지 홀수인지에 따라 기본 방향 설정
       rowStrip.dataset.isEven = (r % 2 === 0);
 
-      // 개별 띠 내부에 바둑판 셀(Past / Present 교차) 배치
-      for (let c = 0; c < cols; c++) {
+      for (let c = 0; c < slideCols; c++) {
         const cell = document.createElement("div");
         cell.className = "slide-cell";
-        cell.style.flex = `0 0 ${100 / cols}%`;
+        cell.style.flex = `0 0 ${100 / slideCols}%`;
         cell.style.height = "100%";
         cell.style.position = "relative";
 
         const isPastInitial = (r + c) % 2 === 0;
 
-        // 과거 레이어
         const pastFace = document.createElement("div");
         pastFace.className = "face-past";
         pastFace.style.position = "absolute";
         pastFace.style.inset = "0";
         pastFace.style.backgroundImage = `url('${item.pastImg}')`;
-        pastFace.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
-        pastFace.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+        pastFace.style.backgroundPosition = `${(c / (slideCols - 1)) * 100}% ${(r / (slideRows - 1)) * 100}%`;
+        pastFace.style.backgroundSize = `${slideCols * 100}% ${slideRows * 100}%`;
 
-        // 현재 레이어
         const presentFace = document.createElement("div");
         presentFace.className = "face-present";
         presentFace.style.position = "absolute";
         presentFace.style.inset = "0";
         presentFace.style.backgroundImage = `url('${item.presentImg}')`;
-        presentFace.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
-        presentFace.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
+        presentFace.style.backgroundPosition = `${(c / (slideCols - 1)) * 100}% ${(r / (slideRows - 1)) * 100}%`;
+        presentFace.style.backgroundSize = `${slideCols * 100}% ${slideRows * 100}%`;
         presentFace.style.opacity = "0";
 
         cell.appendChild(pastFace);
@@ -423,7 +415,6 @@ function buildWeavingArtwork(item) {
     weavingFrame.appendChild(container);
 
   } else if (type === "depth") {
-    // [11번]: 종이 요철 틸트
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -448,7 +439,7 @@ function buildWeavingArtwork(item) {
 }
 
 // ==========================================
-// 6. 실시간 렌더 루프
+// 6. 실시간 렌더 루프 (슬라이드 연동 수정)
 // ==========================================
 function updateViews(progress) {
   currentProgress = Math.max(0, Math.min(1, progress));
@@ -485,19 +476,40 @@ function updateViews(progress) {
       weavingFrame.style.transform = `rotateY(${angle * 8}deg)`;
 
     } else if (type === "slide") {
-      const offset = (1 - Math.abs(currentProgress - 0.5) * 2);
-      const hStrips = weavingFrame.querySelectorAll(".strip-horiz");
-      const vStrips = weavingFrame.querySelectorAll(".strip-vert");
+      // 신규 슬라이드 동기화 (좌측: 과거 원형, 중앙: 체크 직조, 우측: 현재 원형)
+      const rows = weavingFrame.querySelectorAll(".slide-row-strip");
+      const weaveIntensity = 1 - Math.abs(currentProgress - 0.5) * 2; // 0.0 -> 1.0(중앙) -> 0.0
 
-      hStrips.forEach((s) => {
-        const dir = parseFloat(s.dataset.dir);
-        s.style.transform = `translateX(${dir * (1 - offset) * 60}px)`;
+      rows.forEach((strip) => {
+        const isEven = strip.dataset.isEven === "true";
+        const dir = isEven ? 1 : -1;
+        const slideX = dir * weaveIntensity * 16;
+        strip.style.transform = `translateX(${slideX}px)`;
+
+        const cells = strip.querySelectorAll(".slide-cell");
+        cells.forEach((cell) => {
+          const isPastInit = cell.dataset.isPastInitial === "true";
+          const presentFace = cell.querySelector(".face-present");
+
+          if (currentProgress <= 0.5) {
+            const localProgress = currentProgress / 0.5;
+            if (isPastInit) {
+              presentFace.style.opacity = 0;
+            } else {
+              presentFace.style.opacity = localProgress;
+            }
+          } else {
+            const localProgress = (currentProgress - 0.5) / 0.5;
+            if (isPastInit) {
+              presentFace.style.opacity = localProgress;
+            } else {
+              presentFace.style.opacity = 1;
+            }
+          }
+        });
       });
-      vStrips.forEach((s) => {
-        const dir = parseFloat(s.dataset.dir);
-        s.style.transform = `translateY(${dir * (1 - offset) * 60}px)`;
-        s.style.opacity = 0.3 + (offset * 0.7);
-      });
+
+      weavingFrame.style.transform = `rotateY(${angle * 6}deg)`;
 
     } else if (type === "depth") {
       const warpTiles = weavingFrame.querySelectorAll(".tile-warp");
@@ -631,7 +643,7 @@ if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEve
 }
 
 // ==========================================
-// 9. 썸네일 트레이 렌더링 (강제 스크롤 제거)
+// 9. 썸네일 트레이 렌더링
 // ==========================================
 function renderTray() {
   trayContainer.innerHTML = "";
@@ -648,7 +660,6 @@ function renderTray() {
     thumb.addEventListener("click", () => {
       currentIndex = exhibitionData.findIndex(w => w.id === item.id);
       loadCurrentArtwork();
-      // 스크롤 꼬임 방지를 위해 scrollIntoView를 완전히 배제
     });
     trayContainer.appendChild(thumb);
   });
