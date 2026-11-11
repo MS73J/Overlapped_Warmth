@@ -1,13 +1,18 @@
 // ==========================================
 // 1. 연작 아카이브 마스터 데이터셋 (13점)
+// mediaType 옵션: 
+// - "lenticular": 렌티큘러 뷰어 전용
+// - "flip": 포토 위빙 개별 플립 전용
+// - "dissolve": 포토 위빙 바둑판 디졸브 전용
+// - "slide": 포토 위빙 슬라이딩 직조 전용
+// - "depth": 포토 위빙 종이 요철 틸트 전용
 // ==========================================
 const exhibitionData = [
   {
     id: 1,
     title: "중첩된 온기 I: 첫 등교길",
     aspect: "landscape",
-    weavingType: "flip", // 1번: 마우스 호버 및 모바일 터치 드래그로 타일 플립
-    isLenticular: false, // 렌티큘러 탭 제외
+    mediaType: "flip", // 포토위빙 전용
     pastYear: "2007",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
@@ -19,8 +24,7 @@ const exhibitionData = [
     id: 2,
     title: "중첩된 온기 II: 생일 고깔모자",
     aspect: "landscape",
-    weavingType: "flip",
-    isLenticular: true,
+    mediaType: "lenticular", // 렌티큘러 전용
     pastYear: "2009",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
@@ -32,8 +36,7 @@ const exhibitionData = [
     id: 3,
     title: "중첩된 온기 III: 바다를 가리키며",
     aspect: "landscape",
-    weavingType: "depth",
-    isLenticular: true,
+    mediaType: "lenticular", // 렌티큘러 전용
     pastYear: "2009",
     presentYear: "2026",
     location: "제주 외도동 명진빌라",
@@ -45,8 +48,7 @@ const exhibitionData = [
     id: 4,
     title: "중첩된 온기 IV: 바둑판 디졸브",
     aspect: "portrait",
-    weavingType: "dissolve", // 4번: 바둑판 상호 디졸브
-    isLenticular: false, // 렌티큘러 탭 제외
+    mediaType: "dissolve", // 포토위빙 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -58,8 +60,7 @@ const exhibitionData = [
     id: 5,
     title: "중첩된 온기 V: 연작 5",
     aspect: "landscape",
-    weavingType: "slide", // 5번: 양끝 원형, 중앙 교차 슬라이드
-    isLenticular: true,
+    mediaType: "slide", // 포토위빙 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -71,8 +72,7 @@ const exhibitionData = [
     id: 6,
     title: "중첩된 온기 VI: 연작 6",
     aspect: "landscape",
-    weavingType: "depth",
-    isLenticular: true,
+    mediaType: "lenticular", // 렌티큘러 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -84,8 +84,7 @@ const exhibitionData = [
     id: 7,
     title: "중첩된 온기 VII: 연작 7",
     aspect: "landscape",
-    weavingType: "flip",
-    isLenticular: true,
+    mediaType: "lenticular", // 렌티큘러 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -97,12 +96,11 @@ const exhibitionData = [
     id: 8,
     title: "중첩된 온기 VIII: 연작 8",
     aspect: "landscape",
-    weavingType: "slide",
-    isLenticular: true,
+    mediaType: "slide", // 포토위빙 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
-    desc: "아버지의 필름과 나의 디지털 센서가 동일한 공간의 시간을 중첩합니다.",
+    desc: "기억의 띠들이 서서히 맞물려 하나의 상을 형성합니다.",
     pastImg: "assets/images/work-08-past.webp",
     presentImg: "assets/images/work-08-present.webp"
   },
@@ -110,8 +108,7 @@ const exhibitionData = [
     id: 9,
     title: "중첩된 온기 IX: 직조 해체와 결합",
     aspect: "landscape",
-    weavingType: "slide", // 9번: 슬라이딩 직조 해체 결합
-    isLenticular: false, // 렌티큘러 탭 제외
+    mediaType: "slide", // 포토위빙 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -123,8 +120,7 @@ const exhibitionData = [
     id: 10,
     title: "중첩된 온기 X: 연작 10",
     aspect: "portrait",
-    weavingType: "flip",
-    isLenticular: true,
+    mediaType: "lenticular", // 렌티큘러 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -136,8 +132,7 @@ const exhibitionData = [
     id: 11,
     title: "중첩된 온기 XI: 요철의 깊이",
     aspect: "portrait",
-    weavingType: "depth", // 11번: 종이 요철 틸트
-    isLenticular: false, // 렌티큘러 탭 제외
+    mediaType: "depth", // 포토위빙 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -149,8 +144,7 @@ const exhibitionData = [
     id: 12,
     title: "중첩된 온기 XII: 연작 12",
     aspect: "landscape",
-    weavingType: "flip",
-    isLenticular: true,
+    mediaType: "lenticular", // 렌티큘러 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -162,8 +156,7 @@ const exhibitionData = [
     id: 13,
     title: "중첩된 온기 XIII: 마지막 시선",
     aspect: "landscape",
-    weavingType: "depth",
-    isLenticular: true,
+    mediaType: "lenticular", // 렌티큘러 전용
     pastYear: "200X",
     presentYear: "2026",
     location: "기억의 아카이브 장소",
@@ -189,14 +182,15 @@ const workMetaEl = document.getElementById("work-meta");
 const workDescEl = document.getElementById("work-desc");
 const trayContainer = document.getElementById("thumbnail-tray");
 
+const tabAll = document.getElementById("tab-all");
 const tabLenticular = document.getElementById("tab-lenticular");
 const tabWeaving = document.getElementById("tab-weaving");
 
 // ==========================================
 // 3. 상태 관리 변수
 // ==========================================
-let currentMode = "lenticular"; // "lenticular" | "weaving"
-let currentIndex = 1; // 2번 작품부터 기본 표시
+let currentTab = "all"; // "all" | "lenticular" | "weaving"
+let currentIndex = 0;   // 마스터 데이터셋 기준 index
 let currentProgress = 0.5;
 let targetProgress = 0.5;
 let isDragging = false;
@@ -206,35 +200,42 @@ let isTouching = false;
 let gyroResumeTimeout = null;
 
 // ==========================================
-// 4. 모드 전환 및 필터링
+// 4. 모드 탭 필터링 및 전환
 // ==========================================
-if (tabLenticular && tabWeaving) {
-  tabLenticular.addEventListener("click", () => switchMode("lenticular"));
-  tabWeaving.addEventListener("click", () => switchMode("weaving"));
-}
-
 function getFilteredData() {
-  if (currentMode === "lenticular") {
-    return exhibitionData.filter(item => item.isLenticular);
+  if (currentTab === "lenticular") {
+    // 렌티큘러 전용 탭: mediaType이 lenticular인 것만
+    return exhibitionData.filter(item => item.mediaType === "lenticular");
+  } else if (currentTab === "weaving") {
+    // 포토 위빙 전용 탭: mediaType이 lenticular가 아닌 것만 (flip, dissolve, slide, depth)
+    return exhibitionData.filter(item => item.mediaType !== "lenticular");
   } else {
+    // ALL 탭: 전체 13개 노출
     return exhibitionData;
   }
 }
 
-function switchMode(mode) {
-  currentMode = mode;
-  tabLenticular.classList.toggle("active", mode === "lenticular");
-  tabWeaving.classList.toggle("active", mode === "weaving");
+function switchTab(tabName) {
+  currentTab = tabName;
+  if (tabAll) tabAll.classList.toggle("active", tabName === "all");
+  if (tabLenticular) tabLenticular.classList.toggle("active", tabName === "lenticular");
+  if (tabWeaving) tabWeaving.classList.toggle("active", tabName === "weaving");
 
   const filtered = getFilteredData();
-  const isCurrentValid = filtered.some(item => item.id === exhibitionData[currentIndex].id);
-  if (!isCurrentValid) {
+  const currentItem = exhibitionData[currentIndex];
+  const isCurrentValid = filtered.some(item => item.id === currentItem.id);
+
+  if (!isCurrentValid && filtered.length > 0) {
     currentIndex = exhibitionData.findIndex(item => item.id === filtered[0].id);
   }
 
   renderTray();
   loadCurrentArtwork();
 }
+
+if (tabAll) tabAll.addEventListener("click", () => switchTab("all"));
+if (tabLenticular) tabLenticular.addEventListener("click", () => switchTab("lenticular"));
+if (tabWeaving) tabWeaving.addEventListener("click", () => switchTab("weaving"));
 
 function loadCurrentArtwork() {
   const item = exhibitionData[currentIndex];
@@ -247,10 +248,13 @@ function loadCurrentArtwork() {
   workDescEl.textContent = item.desc;
 
   const aspectClass = item.aspect === "landscape" ? "aspect-landscape" : "aspect-portrait";
-  lenticularFrame.className = `lenticular-frame ${aspectClass} ${currentMode === "lenticular" ? "" : "hidden"}`;
-  weavingFrame.className = `weaving-frame ${aspectClass} ${currentMode === "weaving" ? "" : "hidden"}`;
+  const isLenti = item.mediaType === "lenticular";
 
-  if (currentMode === "lenticular") {
+  // 현재 작품의 mediaType에 따라 알맞은 뷰어 자동 활성화
+  lenticularFrame.className = `lenticular-frame ${aspectClass} ${isLenti ? "" : "hidden"}`;
+  weavingFrame.className = `weaving-frame ${aspectClass} ${!isLenti ? "" : "hidden"}`;
+
+  if (isLenti) {
     layerPast.style.backgroundImage = `url('${item.pastImg}')`;
     layerPresent.style.backgroundImage = `url('${item.presentImg}')`;
   } else {
@@ -263,22 +267,22 @@ function loadCurrentArtwork() {
 }
 
 // ==========================================
-// 5. 포토 위빙 3종 인터랙션 빌더
+// 5. 포토 위빙 4종 인터랙션 빌더
 // ==========================================
 function buildWeavingArtwork(item) {
   weavingFrame.innerHTML = "";
-  const type = item.weavingType || "flip";
+  const type = item.mediaType;
 
   const cols = item.aspect === "landscape" ? 12 : 9;
   const rows = item.aspect === "landscape" ? 9 : 12;
 
   if (type === "flip") {
-    // [1번]: 모바일 터치 스와이프 & 데스크톱 마우스 호버 완벽 지원
+    // [1번]: 모바일 터치 스와이프 & 데스크톱 마우스 호버 타일 3D 플립
     const grid = document.createElement("div");
     grid.className = "weave-grid";
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-    grid.style.touchAction = "none"; // 브라우저 기본 제스처 스크롤 원천 차단
+    grid.style.touchAction = "none";
 
     const total = cols * rows;
     for (let i = 0; i < total; i++) {
@@ -290,14 +294,14 @@ function buildWeavingArtwork(item) {
 
       const faceFront = document.createElement("div");
       faceFront.className = "face face-front";
-      faceFront.style.pointerEvents = "none"; // 좌표 탐색 시 자식 요소 간섭 방지
+      faceFront.style.pointerEvents = "none";
       faceFront.style.backgroundImage = `url('${item.pastImg}')`;
       faceFront.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
       faceFront.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
 
       const faceBack = document.createElement("div");
       faceBack.className = "face face-back";
-      faceBack.style.pointerEvents = "none"; // 좌표 탐색 시 자식 요소 간섭 방지
+      faceBack.style.pointerEvents = "none";
       faceBack.style.backgroundImage = `url('${item.presentImg}')`;
       faceBack.style.backgroundPosition = `${(c / (cols - 1)) * 100}% ${(r / (rows - 1)) * 100}%`;
       faceBack.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
@@ -305,17 +309,15 @@ function buildWeavingArtwork(item) {
       tile.appendChild(faceFront);
       tile.appendChild(faceBack);
 
-      // 데스크톱 마우스 호버 및 단순 클릭(탭)
       tile.addEventListener("mouseenter", () => tile.classList.toggle("flipped"));
       tile.addEventListener("click", () => tile.classList.toggle("flipped"));
 
       grid.appendChild(tile);
     }
 
-    // 모바일 터치 드래그(문지르기) 좌표 기반 실시간 감지
     let lastTile = null;
     const onSwipeMove = (e) => {
-      if (e.cancelable) e.preventDefault(); // 화면 바운스/스크롤 방지
+      if (e.cancelable) e.preventDefault();
       const touch = e.touches ? e.touches[0] : e;
       if (!touch) return;
 
@@ -476,8 +478,9 @@ function updateViews(progress) {
   indicatorPin.style.left = `${currentProgress * 100}%`;
 
   const angle = (currentProgress - 0.5) * 2; // -1.0 ~ 1.0
+  const item = exhibitionData[currentIndex];
 
-  if (currentMode === "lenticular") {
+  if (item.mediaType === "lenticular") {
     const presentOpacity = Math.max(0, Math.min(1, (currentProgress - 0.35) / 0.3));
     layerPresent.style.opacity = presentOpacity;
 
@@ -487,8 +490,7 @@ function updateViews(progress) {
     layerGlare.style.transform = `translateX(${angle * 100}%)`;
 
   } else {
-    const item = exhibitionData[currentIndex];
-    const type = item.weavingType || "flip";
+    const type = item.mediaType;
 
     if (type === "flip") {
       weavingFrame.style.transform = `rotateY(${angle * 10}deg)`;
@@ -507,7 +509,7 @@ function updateViews(progress) {
 
     } else if (type === "slide") {
       const rows = weavingFrame.querySelectorAll(".slide-row-strip");
-      const weaveIntensity = 1 - Math.abs(currentProgress - 0.5) * 2; // 0.0 -> 1.0(중앙) -> 0.0
+      const weaveIntensity = 1 - Math.abs(currentProgress - 0.5) * 2;
 
       rows.forEach((strip) => {
         const isEven = strip.dataset.isEven === "true";
@@ -559,9 +561,9 @@ function animationLoop() {
 requestAnimationFrame(animationLoop);
 
 // ==========================================
-// 7. 터치, 마우스 및 키보드 제어 (플립 터치 충돌 해소)
+// 7. 터치, 마우스 및 키보드 제어
 // ==========================================
-const activeTargetFrame = () => (currentMode === "lenticular" ? lenticularFrame : weavingFrame);
+const activeTargetFrame = () => (exhibitionData[currentIndex].mediaType === "lenticular" ? lenticularFrame : weavingFrame);
 
 function onTouchStart(clientX) {
   isTouching = true;
@@ -592,18 +594,12 @@ function onTouchEnd() {
 
 [lenticularFrame, weavingFrame].forEach((el) => {
   el.addEventListener("touchstart", (e) => {
-    // 1번 작품(flip)일 때는 전역 드래그를 양보하여 타일 터치 플립 보장
-    if (currentMode === "weaving" && exhibitionData[currentIndex].weavingType === "flip") {
-      return;
-    }
+    if (exhibitionData[currentIndex].mediaType === "flip") return;
     if (e.touches && e.touches.length > 0) onTouchStart(e.touches[0].clientX);
   }, { passive: true });
 
   el.addEventListener("touchmove", (e) => {
-    // 1번 작품(flip)일 때는 전역 드래그를 멈추고 타일 문지르기에 양보
-    if (currentMode === "weaving" && exhibitionData[currentIndex].weavingType === "flip") {
-      return;
-    }
+    if (exhibitionData[currentIndex].mediaType === "flip") return;
     if (e.touches && e.touches.length > 0) onTouchMove(e.touches[0].clientX);
   }, { passive: true });
 
@@ -611,9 +607,7 @@ function onTouchEnd() {
   el.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
   el.addEventListener("mousedown", (e) => {
-    if (currentMode === "weaving" && exhibitionData[currentIndex].weavingType === "flip") {
-      return;
-    }
+    if (exhibitionData[currentIndex].mediaType === "flip") return;
     onTouchStart(e.clientX);
   });
 });
@@ -720,6 +714,6 @@ if (btnCloseModal && modal) btnCloseModal.addEventListener("click", () => modal.
 if (modalBackdrop && modal) modalBackdrop.addEventListener("click", () => modal.classList.add("hidden"));
 
 // ==========================================
-// 11. 초기 구동 실행
+// 11. 초기 구동 실행 (ALL 탭 기본)
 // ==========================================
-switchMode("lenticular");
+switchTab("all");
